@@ -1,48 +1,30 @@
 # Team 11
 
+## Proof of Concept plan
+### Objective
+The primary focus of this POC is **Confidentiality**. We want to ensure that the uploaded documents are only accessible by authorized users.
+We implement Access control by linking uploaded content to its owner. 
 
+## Scenario overview
+In order to demonstrate this, we set up a scenario:
 
-## Getting started
+1. User 1 logs in using a trust provider.
+2. User 1 uploads a document and signs it.
+3. The system generates a URL that can be accessed by a single designated user.
+4. User 1 shares this URL with User 2.
+5. User 2 opens the URL and logs in using a trust provider.
+6. User 2 successfully retrieves and verifies the signed document from the system.
+7. User 3 attempts to use the same URL but is denied access, as it has been assigned for User 2 only.
 
-To make it easy for you to get started with GitLab, here's a list of recommended next steps.
+## Authentication Approach
 
-Already a pro? Just edit this README.md and make it your own. Want to make it easy? [Use the template at the bottom](#editing-this-readme)!
+- For authentication, we emulate a trust provider by returning mock data for some sample username-password combinations. 
+- Verification of existing documents will be done by querying eIDAS (European Identity Authentication System).
 
-## Add your files
+## Database Setup
+- For this POC, a local SQLite database will be used.
+- Mock data (rows) will be automatically inserted into the database upon program startup.
 
-- [ ] [Create](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#create-a-file) or [upload](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#upload-a-file) files
-- [ ] [Add files using the command line](https://docs.gitlab.com/ee/gitlab-basics/add-file.html#add-a-file-using-the-command-line) or push an existing Git repository with the following command:
-
-```
-cd existing_repo
-git remote add origin https://gitlab.ewi.tudelft.nl/cs4505/2024-2025/teams/team-11.git
-git branch -M main
-git push -uf origin main
-```
-
-## Integrate with your tools
-
-- [ ] [Set up project integrations](https://gitlab.ewi.tudelft.nl/cs4505/2024-2025/teams/team-11/-/settings/integrations)
-
-## Collaborate with your team
-
-- [ ] [Invite team members and collaborators](https://docs.gitlab.com/ee/user/project/members/)
-- [ ] [Create a new merge request](https://docs.gitlab.com/ee/user/project/merge_requests/creating_merge_requests.html)
-- [ ] [Automatically close issues from merge requests](https://docs.gitlab.com/ee/user/project/issues/managing_issues.html#closing-issues-automatically)
-- [ ] [Enable merge request approvals](https://docs.gitlab.com/ee/user/project/merge_requests/approvals/)
-- [ ] [Set auto-merge](https://docs.gitlab.com/ee/user/project/merge_requests/merge_when_pipeline_succeeds.html)
-
-## Test and Deploy
-
-Use the built-in continuous integration in GitLab.
-
-- [ ] [Get started with GitLab CI/CD](https://docs.gitlab.com/ee/ci/quick_start/index.html)
-- [ ] [Analyze your code for known vulnerabilities with Static Application Security Testing (SAST)](https://docs.gitlab.com/ee/user/application_security/sast/)
-- [ ] [Deploy to Kubernetes, Amazon EC2, or Amazon ECS using Auto Deploy](https://docs.gitlab.com/ee/topics/autodevops/requirements.html)
-- [ ] [Use pull-based deployments for improved Kubernetes management](https://docs.gitlab.com/ee/user/clusters/agent/)
-- [ ] [Set up protected environments](https://docs.gitlab.com/ee/ci/environments/protected_environments.html)
-
-***
 
 # Editing this README
 
