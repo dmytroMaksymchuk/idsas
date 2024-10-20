@@ -1,4 +1,3 @@
-
 /.vs
-/IDsas.Server/obj
-/idsas.client/obj
+**/obj
+**/bin
