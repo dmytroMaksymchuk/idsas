@@ -1,17 +1,27 @@
-import { useState } from 'react';
+import {useState} from 'react';
 import './App.css';
+import Header from "./components/Header.tsx";
+import UploadFilePopUp from "./components/UploadFilePopUp.tsx";
+import MyDocumentsList, {ShareState, MyDocument} from "./components/MyDocumentList.tsx";
 
 function App() {
     const [selectedFile, setSelectedFile] = useState(null);
-    const [fileLink, setFileLink] = useState('');
+    const [uploadFileActive, setUploadFileActive] = useState(false);
 
-    // Handle file selection
+    const [myDocuments, setMyDocuments] = useState<MyDocument[]>([
+        { name: 'Document1.pdf', shareState: ShareState.shared },
+        { name: 'Document2.docx', shareState: ShareState.private },
+        { name: 'Presentation.pptx', shareState: ShareState.waitingConfirmation },
+    ]);
+    
+    const [sharedDocuments, setSharedDocuments] = useState();
+
     const handleFileChange = (event) => {
         setSelectedFile(event.target.files[0]);
     };
-    const handleLinkChange = (event) => {
-        setFileLink(event.target.value);
-    };
+    const onDownloadFile = (index: number) => {
+        console.log('Downloading file:', index);
+    }
 
     // Handle file upload (this can be customized to your API or upload logic)
     const handleFileUpload = () => {
@@ -37,33 +47,15 @@ function App() {
         }
     };
 
-    const handleViewFile = () => {
-        // TODO: Implement file viewing logic
-        console.log('Viewing file:', fileLink);
-    };
-
     return (
         <div className="App">
-            <div className={"file-uploading-container"}>
-                <h2>Upload a File</h2>
-                <input type="file" onChange={handleFileChange}/>
-                <div className={"button-group"}>
-                    <button className={"verify-button"} onClick={handleFileUpload}>Verify</button>
-                    <button className={"sign-button"} onClick={handleFileUpload}>Sign</button>
-                </div>
-
-            </div>
-            <div className="enter-link-container">
-                <h2>Enter File Link</h2>
-                <input
-                    type="text"
-                    className={"link-input"}
-                    placeholder="Enter the file link"
-                    value={fileLink}
-                    onChange={handleLinkChange}
-                />
-                <button onClick={handleViewFile}>View File</button>
-            </div>
+            <Header uploadFileActive={uploadFileActive} setUploadFileActive={setUploadFileActive}/>
+            {uploadFileActive &&
+                <UploadFilePopUp handleFileChange={handleFileChange} onVerify={() => console.log("verify")} onSign={() => console.log("sign")} setUploadFileActive={setUploadFileActive}/>
+            }
+            {!uploadFileActive &&
+                <MyDocumentsList title={"My Documents"} documents={myDocuments} onDownloadFile={onDownloadFile} />
+            }
         </div>
     );
 }

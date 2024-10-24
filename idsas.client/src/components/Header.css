@@ -1,0 +1,36 @@
+.app-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 15vh;
+    background-color: #282c34;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.name {
+    position: absolute;
+    right: 10vw;
+    font-size: 1vw;
+    font-weight: bold;
+}
+
+.upload-file-button {
+    position: absolute;
+    left: 10vw;
+    width: 10vw;
+    height: 10vh;
+    filter: invert(1)
+}
+
+.upload-file-button:hover {
+    cursor: pointer;
+}
+
+.upload-file-button:active {
+    transform: scale(0.9);
+}
