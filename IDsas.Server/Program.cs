@@ -6,8 +6,9 @@ namespace IDsas.Server
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            // Add services to the container.
+            builder.Services.AddScoped<IDocumentService, DocumentService>();
 
+            // Add services to the container.
             builder.Services.AddControllers();
 
             var app = builder.Build();

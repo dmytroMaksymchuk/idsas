@@ -6,10 +6,10 @@ namespace IDsas.Server.Controllers
     [Route("api/[controller]")]
     public class DocumentController : ControllerBase
     {
-        private readonly DocumentService _service;
+        private readonly IDocumentService _service;
         private Document? _CurrentDocument;
 
-        public DocumentController(DocumentService service)
+        public DocumentController(IDocumentService service)
         {
             _service = service;
             _CurrentDocument = null;

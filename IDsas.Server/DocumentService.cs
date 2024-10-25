@@ -1,6 +1,6 @@
 namespace IDsas.Server
 {
-    public class DocumentService
+    public class DocumentService : IDocumentService
     {
         // private readonly DocumentRepository _db;
 
