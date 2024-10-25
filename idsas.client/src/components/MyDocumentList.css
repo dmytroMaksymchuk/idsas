@@ -1,0 +1,129 @@
+.documents-list-container {
+    position: absolute;
+    left: 10vh;
+    width: 40vw;
+    height: 70vh;
+    top: 15vh;
+    background-color: #f9f9f9;
+    border-radius: 10px;
+}
+
+.documents-list {
+    display: flex;
+    flex-direction: column;
+    gap: 2vh;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.document-item {
+    position: relative;
+    display: flex;
+    height: 8vh;
+    justify-content: space-between;
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+.document-item:last-child {
+    border-bottom: none;
+}
+
+.document-name {
+    font-weight: bold;
+}
+
+.document-status {
+    font-style: italic;
+    color: #888;
+}
+
+.download-button {
+    position: absolute;
+    bottom: 10%;
+    left: 5%;
+    width: 5%;
+    height: 30%;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 5px 10px;
+    cursor: pointer;
+}
+
+.download-button:hover {
+    background-color: #0056b3;
+}
+
+.download-button:active {
+    transform: scale(0.9);
+}
+
+.manage-access-button {
+    position: absolute;
+    bottom: 10%;
+    right: 1%;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 5px 10px;
+    cursor: pointer;
+}
+
+.document-inspection {
+    position: fixed;
+    background-color: #ffffff;
+    padding: 20px;
+    margin-bottom: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    width: 80%;
+    height: 15vh;
+    max-width: 600px;
+}
+
+.share-state-text {
+    position: absolute;
+    bottom: 10%;
+    left: 10%;
+    font-size: 2.0vh;
+    margin-bottom: 15px;
+}
+
+.share-state-text-2 {
+    position: absolute;
+    bottom: 0;
+    left: 35%;
+    transform: translateY(-50%);
+    font-size: 2.0vh;
+    margin-bottom: 15px;
+    font-weight: bold;
+}
+
+.manage-access-button {
+    position: absolute;
+    bottom: 10%;
+    right: 1%;
+    width: 20%;
+    height: 30%;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 5px 10px;
+    cursor: pointer;
+}
+
+.close-inspection-button {
+    position: absolute;
+    top: 10%;
+    right: 1%;
+    font-size: 1.5rem;
+    cursor: pointer;
+    width: 10%;
+    height: 30%;
+}
