@@ -7,8 +7,8 @@ namespace IDsas.Server
         public string? FileType { get; set; }
         public byte[]? FileData { get; set; }
         public DateTime UploadDate { get; set; }
-        public bool Signed { get; set;}
+        public bool Signed { get; set; }
         public string? Signer { get; set; }
-        public DateTime? SigningDate { get; set;}
+        public DateTime? SigningDate { get; set; }
     }
 }
