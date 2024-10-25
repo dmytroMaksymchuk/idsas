@@ -3,6 +3,7 @@ import './App.css';
 import Header from "./components/Header.tsx";
 import UploadFilePopUp from "./components/UploadFilePopUp.tsx";
 import MyDocumentsList, {ShareState, MyDocument} from "./components/MyDocumentList.tsx";
+import SharedDocumentList, {SharedDocument} from "./components/SharedDocumentList.tsx";
 
 function App() {
     const [selectedFile, setSelectedFile] = useState(null);
@@ -14,7 +15,11 @@ function App() {
         { name: 'Presentation.pptx', shareState: ShareState.waitingConfirmation },
     ]);
     
-    const [sharedDocuments, setSharedDocuments] = useState();
+    const [sharedDocuments, setSharedDocuments] = useState<SharedDocument[]>([
+        { name: 'Document3.pdf' },
+        { name: 'Document4.docx' },
+        { name: 'Presentation2.pptx' },
+    ]);
 
     const handleFileChange = (event) => {
         setSelectedFile(event.target.files[0]);
@@ -54,7 +59,10 @@ function App() {
                 <UploadFilePopUp handleFileChange={handleFileChange} onVerify={() => console.log("verify")} onSign={() => console.log("sign")} setUploadFileActive={setUploadFileActive}/>
             }
             {!uploadFileActive &&
-                <MyDocumentsList title={"My Documents"} documents={myDocuments} onDownloadFile={onDownloadFile} />
+                <>
+                    <MyDocumentsList title={"My Documents"} documents={myDocuments} onDownloadFile={onDownloadFile} />
+                    <SharedDocumentList title={"Documents Shared With Me"} documents={sharedDocuments} onDownloadFile={() => console.log("Download")} />
+                </>
             }
         </div>
     );
