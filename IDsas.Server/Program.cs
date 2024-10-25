@@ -1,3 +1,5 @@
+using IDsas.Server.Services;
+
 namespace IDsas.Server
 {
     public class Program

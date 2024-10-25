@@ -1,4 +1,5 @@
-﻿namespace IDsas.Server.Entities;
+﻿// ReSharper disable EntityFramework.ModelValidation.UnlimitedStringLength
+namespace IDsas.Server.Entities;
 
 public class User
 {

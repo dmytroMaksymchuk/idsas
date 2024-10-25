@@ -1,4 +1,4 @@
-namespace IDsas.Server
+namespace IDsas.Server.Services
 {
     public class DocumentService : IDocumentService
     {

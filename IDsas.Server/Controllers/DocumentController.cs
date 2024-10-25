@@ -1,3 +1,5 @@
+using IDsas.Server.Entities;
+using IDsas.Server.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace IDsas.Server.Controllers
@@ -7,12 +9,12 @@ namespace IDsas.Server.Controllers
     public class DocumentController : ControllerBase
     {
         private readonly IDocumentService _service;
-        private Document? _CurrentDocument;
+        private Document _currentDocument;
 
         public DocumentController(IDocumentService service)
         {
             _service = service;
-            _CurrentDocument = null;
+            _currentDocument = null;
         }
 
         [HttpPost("/upload")]
@@ -24,7 +26,7 @@ namespace IDsas.Server.Controllers
             }
 
             Document document = _service.VerifyDocument(file);
-            _CurrentDocument = document;
+            _currentDocument = document;
 
             return Ok(document);
         }
@@ -32,14 +34,27 @@ namespace IDsas.Server.Controllers
         [HttpPut("/sign")]
         public IActionResult SignDocument(string SignerName)
         {
-            if (_CurrentDocument == null)
+            if (_currentDocument == null)
             {
                 return BadRequest("Upload a file before signing.");
             }
 
-            Document signed = _service.SignDocument(_CurrentDocument, SignerName);
+            Document signed = _service.SignDocument(_currentDocument, SignerName);
 
             return Ok(signed);
         }
+
+        /// <summary>
+        /// Retrieve a document using a token
+        /// </summary>
+        public void GetDocument(string documentToken)
+        {
+            //First check the token against the links table
+
+            //Check the link type if a match is found
+
+        }
+
+
     }
 }
