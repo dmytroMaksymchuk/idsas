@@ -1,13 +1,16 @@
+using IDsas.Server.Entities;
+using Microsoft.EntityFrameworkCore;
+
 namespace IDsas.Server.Services
 {
     public class DocumentService : IDocumentService
     {
-        // private readonly DocumentRepository _db;
+        private readonly DocumentContext _db;
 
-        // public DocumentService(DocumentRepository db)
-        // {
-        //     _db = db;
-        // }
+        public DocumentService(DocumentContext db)
+        {
+            _db = db;
+        }
 
         public Document VerifyDocument(IFormFile file)
         {
@@ -23,13 +26,6 @@ namespace IDsas.Server.Services
 
             var document = new Document
             {
-                FileName = file.FileName,
-                FileType = file.ContentType,
-                FileData = fileData,
-                UploadDate = DateTime.Now,
-                Signed = false,
-                Signer = null,
-                SigningDate = null
             };
 
             return document;
@@ -39,14 +35,41 @@ namespace IDsas.Server.Services
         {
             // perform operations on the file data to actually sign the document
             // this method returns the same file after populating the sign-related fields 
-
-            document.Signed = true;
-            document.Signer = SignerName;
-            document.SigningDate = DateTime.Now;
-
             // save document to the database _db
 
             return document;
+        }
+
+        public Document GetDocument(string documentToken, string userToken)
+        {
+            DocumentLink d = _db.DocumentLinks.First(d => d.AccessToken == documentToken);
+            switch (d.LinkType)
+            {
+                case LinkType.Public:
+                    return d.Document;
+                case LinkType.FirstToAccess:
+                    {
+                        if (d.AssociatedUser is { } user)
+                        {
+                            if (user.AuthorizationToken != userToken)
+                            {
+                                //TODO return error code
+                                return null;
+                            }
+                        }
+                        else
+                        {
+                            d.AssociatedUser = new User { AuthorizationToken = userToken };
+                        }
+
+                        return d.Document;
+                        break;
+                    }
+                case LinkType.VerifiedFirstToAccess:
+                    {
+
+                    }
+            }
         }
     }
 }

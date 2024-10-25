@@ -47,12 +47,13 @@ namespace IDsas.Server.Controllers
         /// <summary>
         /// Retrieve a document using a token
         /// </summary>
-        public void GetDocument(string documentToken)
+        [HttpGet("/document")]
+        public IActionResult GetDocument(string documentToken)
         {
             //First check the token against the links table
-
             //Check the link type if a match is found
-
+            _service.GetDocument(documentToken);
+            return Ok();
         }
 
 

@@ -1,4 +1,5 @@
 using IDsas.Server.Services;
+using Microsoft.EntityFrameworkCore;
 
 namespace IDsas.Server
 {
@@ -8,10 +9,12 @@ namespace IDsas.Server
         {
             var builder = WebApplication.CreateBuilder(args);
 
+            builder.Services.AddDbContext<DocumentContext>();
             builder.Services.AddScoped<IDocumentService, DocumentService>();
 
             // Add services to the container.
             builder.Services.AddControllers();
+
 
             var app = builder.Build();
 

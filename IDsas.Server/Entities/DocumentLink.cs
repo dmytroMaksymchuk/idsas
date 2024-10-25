@@ -7,6 +7,7 @@ public class DocumentLink
     public string AccessToken { get; set; }
     public Document Document { get; set; }
 
+    public bool IsConfirmed { get; set; }
     public User AssociatedUser { get; set; }
     public LinkType LinkType { get; set; }
 }

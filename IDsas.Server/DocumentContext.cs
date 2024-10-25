@@ -5,6 +5,20 @@ namespace IDsas.Server
 {
     public class DocumentContext : DbContext
     {
+
+        public DocumentContext(DbContextOptions<DocumentContext> options) : base(options)
+        {
+        }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<DocumentLink>().Navigation(documentLink => documentLink.Document).AutoInclude();
+            modelBuilder.Entity<DocumentLink>().Navigation(documentLink => documentLink.AssociatedUser).AutoInclude();
+                
+                //.Include(documentLink => documentLink.AssociatedUser)
+            base.OnModelCreating(modelBuilder);
+        }
+
         public DbSet<Document> Documents { get; set; }
 
         public DbSet<User> Users { get; set; }
