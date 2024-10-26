@@ -1,4 +1,8 @@
 ﻿// ReSharper disable EntityFramework.ModelValidation.UnlimitedStringLength
+
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
 namespace IDsas.Server.Entities;
 
 public class DocumentLink
@@ -9,7 +13,10 @@ public class DocumentLink
     /// https://vespa-mrs.github.io/vespa.io/development/project_dev/database/DatabaseUuidEfficiency.html
     /// However, for the purposes of the Proof of Concept, it is a small sacrifice in favor of simplicity.
     /// </summary>
-    public string Id { get; set; }
+    ///  [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+    [Key]
+    public Guid Id { get; set; }
 
     public Document Document { get; set; }
 
