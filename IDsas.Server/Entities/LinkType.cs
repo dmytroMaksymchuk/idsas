@@ -4,5 +4,5 @@ public enum LinkType
 {
     Public,
     FirstToAccess,
-    VerifiedFirstToAccess,
+    ConfirmedFirstToAccess,
 }

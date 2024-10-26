@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace IDsas.Server.Migrations
 {
-    [DbContext(typeof(DocumentContext))]
+    [DbContext(typeof(DatabaseContext))]
     [Migration("20241025150019_InitialCreate")]
     partial class InitialCreate
     {

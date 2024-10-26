@@ -1,5 +1,4 @@
 using IDsas.Server.Services;
-using Microsoft.EntityFrameworkCore;
 
 namespace IDsas.Server
 {
@@ -9,12 +8,9 @@ namespace IDsas.Server
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            builder.Services.AddDbContext<DocumentContext>();
+            builder.Services.AddDbContext<DatabaseContext>();
             builder.Services.AddScoped<IDocumentService, DocumentService>();
-
-            // Add services to the container.
             builder.Services.AddControllers();
-
 
             var app = builder.Build();
 
@@ -22,14 +18,10 @@ namespace IDsas.Server
             app.UseStaticFiles();
 
             // Configure the HTTP request pipeline.
-
             app.UseAuthorization();
 
-
             app.MapControllers();
-
             app.MapFallbackToFile("/index.html");
-
             app.Run();
         }
     }
