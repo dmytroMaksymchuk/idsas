@@ -15,10 +15,13 @@ interface MyDocumentsListProps {
     title: string;
     documents: MyDocument[];
     onDownloadFile: (index: number) => void;
+    confirmDocument: (index: number) => void;
+    rejectDocument: (index: number) => void;
 }
 
-const MyDocumentsList: React.FC<MyDocumentsListProps> = ({ title, documents, onDownloadFile }) => {
+const MyDocumentsList: React.FC<MyDocumentsListProps> = ({ title, documents, onDownloadFile, confirmDocument, rejectDocument }) => {
     const [inspectDocumentID, setInspectDocumentID] = useState<number>(-1);
+    const [manageConfirmation, setManageConfirmation] = useState<boolean>(false);
 
     useEffect(() => {
         documents.map((document, index) => {
@@ -60,12 +63,33 @@ const MyDocumentsList: React.FC<MyDocumentsListProps> = ({ title, documents, onD
                             <>
                                 <span className={"share-state-text-2"}>{ShareState.private}</span>
                                 <button className="manage-access-button">Share</button>
+                                <select className={"share-dropdown"}>
+                                    <option value="first">First to Access</option>
+                                    <option value="public">Public</option>
+                                </select>
                             </>
                         )}
                         {documents[inspectDocumentID].shareState == ShareState.waitingConfirmation && (
                             <>
                                 <span className={"share-state-text-2"}>{ShareState.waitingConfirmation}</span>
-                                <button className="manage-access-button">Confirm</button>
+                                <button className="manage-access-button" onClick={
+                                    () => setManageConfirmation(!manageConfirmation)}>
+                                    Manage
+                                </button>
+
+                                {manageConfirmation && (
+                                    <div className={"confirmation-management"}>
+                                        <h4 className={"requested-user"}>Access requested by user: B</h4>
+                                        <button className="confirm-button" onClick={() => {
+                                            setManageConfirmation(false);
+                                            confirmDocument(inspectDocumentID);
+                                        }}>Confirm</button>
+                                        <button className="reject-button" onClick={() => {
+                                            setManageConfirmation(false);
+                                            rejectDocument(inspectDocumentID);
+                                        }}>Reject</button>
+                                    </div>
+                                )}
                             </>
                         )}
                     </div>

@@ -82,7 +82,7 @@
     border-radius: 8px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     width: 80%;
-    height: 15vh;
+    height: 20vh;
     max-width: 600px;
 }
 
@@ -126,4 +126,16 @@
     cursor: pointer;
     width: 10%;
     height: 30%;
+}
+
+.share-dropdown {
+    position: absolute;
+    bottom: 40%;
+    right: 1%;
+    width: 20%;
+    height: 15%;
+    border: none;
+    border-radius: 5px;
+    padding: 5px 10px;
+    cursor: pointer;
 }

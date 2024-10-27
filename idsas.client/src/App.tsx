@@ -1,4 +1,4 @@
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
 import './App.css';
 import Header from "./components/Header.tsx";
 import UploadFilePopUp from "./components/UploadFilePopUp.tsx";
@@ -8,6 +8,13 @@ import SharedDocumentList, {SharedDocument} from "./components/SharedDocumentLis
 function App() {
     const [selectedFile, setSelectedFile] = useState(null);
     const [uploadFileActive, setUploadFileActive] = useState(false);
+    const [userIndex, setUserIndex] = useState(0);
+
+    const usersTokens = [
+        '0x1234567890',
+        '0x0987654321',
+        '0xabcdef1234',
+    ]
 
     const [myDocuments, setMyDocuments] = useState<MyDocument[]>([
         { name: 'Document1.pdf', shareState: ShareState.shared },
@@ -16,16 +23,36 @@ function App() {
     ]);
     
     const [sharedDocuments, setSharedDocuments] = useState<SharedDocument[]>([
-        { name: 'Document3.pdf' },
+        { name: 'Document3.pdf', available: true },
         { name: 'Document4.docx' },
         { name: 'Presentation2.pptx' },
     ]);
 
+    const handleSignDocument = () => {
+        console.log('Signing document');
+        setUploadFileActive(false);
+        handleFileUpload();
+    }
     const handleFileChange = (event) => {
         setSelectedFile(event.target.files[0]);
     };
     const onDownloadFile = (index: number) => {
         console.log('Downloading file:', index);
+    };
+    const fetchDocuments = () => {
+        // Fetch the documents from the server
+        fetch('https://localhost:5001/api/documents', {
+            method: 'GET',
+        })
+        .then((response) => response.json())
+        .then((data) => {
+            console.log('Documents fetched successfully:', data);
+            setMyDocuments(data.myDocuments);
+            setSharedDocuments(data.sharedDocuments);
+        })
+        .catch((error) => {
+            console.error('Error fetching documents:', error);
+        });
     }
 
     // Handle file upload (this can be customized to your API or upload logic)
@@ -36,32 +63,48 @@ function App() {
             formData.append('file', selectedFile);
 
             // Send the file to the server
-            // fetch('/upload', {
-            //     method: 'POST',
-            //     body: formData,
-            // })
-            // .then((response) => response.json())
-            // .then((data) => {
-            //     console.log('File uploaded successfully:', data);
-            // })
-            // .catch((error) => {
-            //     console.error('Error uploading file:', error);
-            // });
+            fetch('api/document/upload', {
+                method: 'POST',
+                body: formData,
+            })
+            .then((response) => response.json())
+            .then((data) => {
+                console.log('File uploaded successfully:', data);
+            })
+            .catch((error) => {
+                console.error('Error uploading file:', error);
+            });
         } else {
             console.log('No file selected');
         }
     };
 
+    const onAccessSharedFile = (token: string) => {
+        console.log('Accessing shared file with token:', token);
+    };
+
+    useEffect(() => {
+        // Fetch the documents when the app loads
+        fetchDocuments();
+    }, []);
+
+    useEffect(() => {
+        // Refresh the documents when the user index changes
+        // Set all flags to false
+    }, [userIndex]);
+
     return (
         <div className="App">
-            <Header uploadFileActive={uploadFileActive} setUploadFileActive={setUploadFileActive}/>
+            <Header uploadFileActive={uploadFileActive} setUploadFileActive={setUploadFileActive} userIndex={userIndex} setUserIndex={setUserIndex}/>
             {uploadFileActive &&
-                <UploadFilePopUp handleFileChange={handleFileChange} onVerify={() => console.log("verify")} onSign={() => console.log("sign")} setUploadFileActive={setUploadFileActive}/>
+                <UploadFilePopUp handleFileChange={handleFileChange} onSign={handleSignDocument} setUploadFileActive={setUploadFileActive}/>
             }
             {!uploadFileActive &&
                 <>
-                    <MyDocumentsList title={"My Documents"} documents={myDocuments} onDownloadFile={onDownloadFile} />
-                    <SharedDocumentList title={"Documents Shared With Me"} documents={sharedDocuments} onDownloadFile={() => console.log("Download")} />
+                    <img className={"refresh-button"} src={"./refresh.svg"} alt={"refresh"} onClick={fetchDocuments} />
+                    <MyDocumentsList title={"My Documents"} documents={myDocuments} onDownloadFile={onDownloadFile}/>
+                    <SharedDocumentList title={"Documents Shared With Me"} documents={sharedDocuments}
+                                        onDownloadFile={() => console.log("Download")} onFileAccess={onAccessSharedFile}/>
                 </>
             }
         </div>
