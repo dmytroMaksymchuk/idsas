@@ -48,10 +48,10 @@ public class DocumentController : ControllerBase
     }
 
     /// <summary>
-    /// Retrieve a document using a token
+    /// Retrieve a document using its token
     /// </summary>
-    [HttpGet("document")]
-    public IActionResult GetDocument(string documentId, string userToken)
+    [HttpGet("access")]
+    public IActionResult AccessDocument(string documentId, string userToken)
     {
         //First check the token against the links table
         //Check the link type if a match is found
@@ -59,6 +59,8 @@ public class DocumentController : ControllerBase
         return Ok();
     }
 
+
+    [HttpGet("share")]
     public IActionResult ShareDocument(string documentToken, string userToken)
     {
         if (!_documentService.OwnsDocument(userToken))
