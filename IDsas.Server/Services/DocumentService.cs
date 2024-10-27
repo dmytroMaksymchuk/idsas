@@ -38,7 +38,7 @@ public class DocumentService : IDocumentService
 
     public Document GetDocument(string documentId, string userToken)
     {
-        var d = _databaseContext.DocumentLinks.First(d => d.Id == Guid.Parse(documentId));
+        var d = _databaseContext.DocumentLinks.First(d => d.Id.ToString() == documentId);
         switch (d.LinkType)
         {
             case LinkType.Public:
@@ -47,7 +47,7 @@ public class DocumentService : IDocumentService
                 {
                     if (d.AssociatedUser is { } user)
                     {
-                        if (user.AuthorizationToken != Guid.Parse(userToken))
+                        if (user.AuthorizationToken.ToString() != userToken)
                         {
                             //TODO return error code when
                             return null;
