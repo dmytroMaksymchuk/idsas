@@ -1,4 +1,5 @@
 using IDsas.Server.Entities;
+using Microsoft.AspNetCore.Mvc;
 
 namespace IDsas.Server.Services;
 
@@ -36,6 +37,7 @@ public class DocumentService : IDocumentService
         return document;
     }
 
+
     public Document GetDocument(string documentId, string userToken)
     {
         var d = _databaseContext.DocumentLinks.First(d => d.Id.ToString() == documentId);
@@ -70,5 +72,17 @@ public class DocumentService : IDocumentService
         }
 
         return null;
+    }
+
+    public string ShareDocument(string documentToken, string userToken)
+    {
+        //TODO
+        return null;
+    }
+
+    public bool OwnsDocument(string userToken)
+    {
+        //TODO   
+        return false;
     }
 }

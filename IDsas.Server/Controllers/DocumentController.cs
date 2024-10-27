@@ -58,4 +58,13 @@ public class DocumentController : ControllerBase
         _documentService.GetDocument(documentId, userToken);
         return Ok();
     }
+
+    public IActionResult ShareDocument(string documentToken, string userToken)
+    {
+        if (!_documentService.OwnsDocument(userToken))
+        {
+            Forbid();
+        }
+        return Ok(_documentService.ShareDocument(documentToken, userToken));
+    }
 }

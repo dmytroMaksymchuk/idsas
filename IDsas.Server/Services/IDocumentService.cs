@@ -9,4 +9,8 @@ public interface IDocumentService
     Document SignDocument(Document document, string signerName);
 
     Document GetDocument(string documentId, string userToken);
+
+    string ShareDocument(string documentToken, string userToken);
+
+    bool OwnsDocument(string userToken);
 }
