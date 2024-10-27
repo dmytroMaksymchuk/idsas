@@ -10,11 +10,11 @@ function App() {
     const [uploadFileActive, setUploadFileActive] = useState(false);
     const [userIndex, setUserIndex] = useState(0);
 
-    const usersTokens = [
-        '0x1234567890',
-        '0x0987654321',
-        '0xabcdef1234',
-    ]
+    //const usersTokens = [
+    //    '0x1234567890',
+    //    '0x0987654321',
+    //    '0xabcdef1234',
+    //]
 
     const [myDocuments, setMyDocuments] = useState<MyDocument[]>([
         { name: 'Document1.pdf', shareState: ShareState.shared },
@@ -24,8 +24,14 @@ function App() {
     
     const [sharedDocuments, setSharedDocuments] = useState<SharedDocument[]>([
         { name: 'Document3.pdf', available: true },
-        { name: 'Document4.docx' },
-        { name: 'Presentation2.pptx' },
+        {
+            name: 'Document4.docx',
+            available: false
+        },
+        {
+            name: 'Presentation2.pptx',
+            available: false
+        },
     ]);
 
     const handleSignDocument = () => {
@@ -33,7 +39,7 @@ function App() {
         setUploadFileActive(false);
         handleFileUpload();
     }
-    const handleFileChange = (event) => {
+    const handleFileChange = (event: any) => {
         setSelectedFile(event.target.files[0]);
     };
     const onDownloadFile = (index: number) => {
@@ -101,8 +107,8 @@ function App() {
             }
             {!uploadFileActive &&
                 <>
-                    <img className={"refresh-button"} src={"./refresh.svg"} alt={"refresh"} onClick={fetchDocuments} />
-                    <MyDocumentsList title={"My Documents"} documents={myDocuments} onDownloadFile={onDownloadFile}/>
+                <img className={"refresh-button"} src={"./refresh.svg"} alt={"refresh"} onClick={fetchDocuments} />
+                <MyDocumentsList title={"My Documents"} documents={myDocuments} onDownloadFile={onDownloadFile} confirmDocument={() => { }} rejectDocument={() => { }} />
                     <SharedDocumentList title={"Documents Shared With Me"} documents={sharedDocuments}
                                         onDownloadFile={() => console.log("Download")} onFileAccess={onAccessSharedFile}/>
                 </>

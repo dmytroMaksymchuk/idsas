@@ -1,7 +1,7 @@
 import './UploadFilePopUp.css';
 
 interface UploadFilePopUpProps {
-    handleFileChange: (event) => void;
+    handleFileChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
     onSign: () => void;
     setUploadFileActive: (active: boolean) => void;
 }
