@@ -45,9 +45,9 @@ function App() {
     const onDownloadFile = (index: number) => {
         console.log('Downloading file:', index);
     };
-    const fetchDocuments = () => {
+    const fetchDocuments = async () => {
         // Fetch the documents from the server
-        fetch('https://localhost:5001/api/documents', {
+        fetch('api/document/document', {
             method: 'GET',
         })
         .then((response) => response.json())
@@ -59,7 +59,9 @@ function App() {
         .catch((error) => {
             console.error('Error fetching documents:', error);
         });
+        console.log('Fetching documents...');
     }
+
 
     // Handle file upload (this can be customized to your API or upload logic)
     const handleFileUpload = () => {
@@ -69,7 +71,7 @@ function App() {
             formData.append('file', selectedFile);
 
             // Send the file to the server
-            fetch('api/document/upload', {
+            fetch('http://localhost:32768/api/document/upload', {
                 method: 'POST',
                 body: formData,
             })
@@ -84,6 +86,30 @@ function App() {
             console.log('No file selected');
         }
     };
+
+    // useEffect(() => {
+    //     const testAPI = async () => {
+    //         try {
+    //             // Construct the URL with query parameters
+    //             const response = await fetch(`http://localhost:32768/api/document/document?documentId=${encodeURIComponent("24324")}&userToken=${encodeURIComponent("234234")}`, {
+    //                 method: 'GET',
+    //             });
+    //             console.log('Response:', response);
+    //
+    //             // Check if the response is OK (status code 200-299)
+    //             if (!response.ok) {
+    //                 throw new Error(`HTTP error! Status: ${response.status}`);
+    //             }
+    //
+    //             const data = await response.json();
+    //             console.log('Test API response:', data);
+    //         } catch (error) {
+    //             console.error('Error fetching document:', error);
+    //         }
+    //     };
+    //
+    //     testAPI();
+    // }, []);
 
     const onAccessSharedFile = (token: string) => {
         console.log('Accessing shared file with token:', token);
