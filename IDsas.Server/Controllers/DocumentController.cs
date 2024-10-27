@@ -8,15 +8,18 @@ namespace IDsas.Server.Controllers;
 [Route("api/[controller]")]
 public class DocumentController : ControllerBase
 {
-    private readonly IDocumentService _service;
+    private readonly IDocumentService _documentService;
     private Document _currentDocument;
 
-    public DocumentController(IDocumentService service)
+    public DocumentController(IDocumentService documentService)
     {
-        _service = service;
+        _documentService = documentService;
         _currentDocument = null;
     }
 
+    /// <summary>
+    /// This endpoint accepts form/multipart content in the request body.
+    /// </summary>
     [HttpPost("upload")]
     public IActionResult UploadDocument(IFormFile file)
     {
@@ -25,7 +28,7 @@ public class DocumentController : ControllerBase
             return BadRequest("No file uploaded.");
         }
 
-        Document document = _service.VerifyDocument(file);
+        Document document = _documentService.VerifyDocument(file);
         _currentDocument = document;
 
         return Ok(document);
@@ -39,7 +42,7 @@ public class DocumentController : ControllerBase
             return BadRequest("Upload a file before signing.");
         }
 
-        Document signed = _service.SignDocument(_currentDocument, signerName);
+        Document signed = _documentService.SignDocument(_currentDocument, signerName);
 
         return Ok(signed);
     }
@@ -52,7 +55,7 @@ public class DocumentController : ControllerBase
     {
         //First check the token against the links table
         //Check the link type if a match is found
-        _service.GetDocument(documentId, userToken);
+        _documentService.GetDocument(documentId, userToken);
         return Ok();
     }
 }
