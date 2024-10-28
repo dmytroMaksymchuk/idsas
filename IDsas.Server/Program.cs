@@ -1,4 +1,5 @@
 using IDsas.Server.Services;
+using Microsoft.EntityFrameworkCore;
 
 namespace IDsas.Server
 {
@@ -7,6 +8,9 @@ namespace IDsas.Server
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+
+            using var context = new DatabaseContext();
+            context.Database.Migrate();
 
             // Register services
             builder.Services.AddDbContext<DatabaseContext>();
