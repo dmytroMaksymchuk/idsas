@@ -3,7 +3,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace IDsas.Server.Entities;
+namespace IDsas.Server.DatabaseEntities;
 
 public class Document
 {

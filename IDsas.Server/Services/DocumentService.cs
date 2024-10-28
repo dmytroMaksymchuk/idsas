@@ -1,11 +1,11 @@
-using IDsas.Server.Entities;
+using IDsas.Server.DatabaseEntities;
 using IDsas.Server.RestEntities;
 
 namespace IDsas.Server.Services;
 
 public class DocumentService(DatabaseContext databaseContext) : IDocumentService
 {
-    public (bool status, DocumentEntry document) UploadDocument(IFormFile file, Guid authorToken)
+    public (bool status, DocumentResponse document) UploadDocument(IFormFile file, Guid authorToken)
     {
         byte[] fileData;
         try
@@ -26,7 +26,7 @@ public class DocumentService(DatabaseContext databaseContext) : IDocumentService
         databaseContext.SaveChanges();
 
         // Instantiate the response body
-        var documentEntry = new DocumentEntry { Content = document.Content, Title = document.Title, DocumentToken = document.Id.ToString() };
+        var documentEntry = new DocumentResponse { Content = document.Content, Title = document.Title, DocumentToken = document.Id.ToString() };
         return (true, documentEntry);
     }
 

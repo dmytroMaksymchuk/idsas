@@ -1,6 +1,6 @@
 ﻿namespace IDsas.Server.RestEntities;
 
-public class DocumentEntry
+public class DocumentResponse
 {
     public string DocumentToken { get; set; }
     public string Title { get; set; }
