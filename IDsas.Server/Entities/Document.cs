@@ -11,7 +11,7 @@ public class Document
     [Key]
     public Guid Id { get; set; }
     public string Title { get; set; }
-    public string Content { get; set; }
+    public byte[] Content { get; set; }
     public User Author { get; set; }
     public IList<DocumentLink> DocumentLinks { get; set; }
 }

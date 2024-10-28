@@ -75,6 +75,6 @@ public class DocumentController : ControllerBase
     [HttpGet("all")]
     public IActionResult AllDocuments(string userToken)
     {
-        _currentDocument.DocumentsForUser();
+      (bool status, List<Document> userDocuments) = _documentService.DocumentsForUser();
     }
 }
