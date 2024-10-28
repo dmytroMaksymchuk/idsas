@@ -5,6 +5,7 @@ import UploadFilePopUp from "./components/UploadFilePopUp.tsx";
 import MyDocumentsList, {ShareState, MyDocument} from "./components/MyDocumentList.tsx";
 import SharedDocumentList, {SharedDocument} from "./components/SharedDocumentList.tsx";
 
+const HTTP_PATH = `http://localhost:32768/`;
 function App() {
     const [selectedFile, setSelectedFile] = useState(null);
     const [uploadFileActive, setUploadFileActive] = useState(false);
@@ -47,19 +48,19 @@ function App() {
     };
     const fetchDocuments = () => {
         // Fetch the documents from the server
-        fetch('api/document/document', {
-            method: 'GET',
-        })
-        .then((response) => response.json())
-        .then((data) => {
-            console.log('Documents fetched successfully:', data);
-            setMyDocuments(data.myDocuments);
-            setSharedDocuments(data.sharedDocuments);
-        })
-        .catch((error) => {
-            console.error('Error fetching documents:', error);
-        });
-        console.log('Fetching documents...');
+        //fetch('api/document/document', {
+        //    method: 'GET',
+        //})
+        //.then((response) => response.json())
+        //.then((data) => {
+        //    console.log('Documents fetched successfully:', data);
+        //    setMyDocuments(data.myDocuments);
+        //    setSharedDocuments(data.sharedDocuments);
+        //})
+        //.catch((error) => {
+        //    console.error('Error fetching documents:', error);
+        //});
+        //console.log('Fetching documents...');
     }
 
 
@@ -69,9 +70,10 @@ function App() {
             // Create a FormData object to send the file to the server
             const formData = new FormData();
             formData.append('file', selectedFile);
+            //formData.append('authorToken');
 
             // Send the file to the server
-            fetch('http://localhost:32768/api/document/upload', {
+            fetch('api/document/upload', {
                 method: 'POST',
                 body: formData,
             })
