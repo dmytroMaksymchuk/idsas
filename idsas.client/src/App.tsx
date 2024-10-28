@@ -48,9 +48,9 @@ function App() {
     const onDownloadFile = (index: number) => {
         console.log('Downloading file:', index);
     };
-    const fetchDocuments = () => {
+    const fetchDocuments = (index: number = userIndex) => {
         // Fetch the documents from the server
-        fetch(HTTP_PATH + `api/document/all?userToken=${usersTokens[userIndex]}`, {
+        fetch(HTTP_PATH + `api/document/all?userToken=${usersTokens[index]}`, {
             method: 'GET',
         })
         .then((response) => response.json())
@@ -63,21 +63,27 @@ function App() {
                 if (doc.shareState == 2) {
                     shareState = ShareState.waitingConfirmation;
                 }
-                documents.push({ name: doc.title, token: doc.documentToken, shareState: shareState  })
+                const nameTemp: string = doc.title ? doc.title : "---";
+                console.log("Name: " + nameTemp);
+                documents.push({ name: nameTemp, token: doc.documentToken, shareState: shareState  })
             });
 
-            console.log(documents)
+            console.log("Checkign here!!!: " + documents)
 
-            setMyDocuments(documents);
+            if (documents.length != 0)
+                setMyDocuments(documents);
+            else
+                setMyDocuments([]);
+            
         })
         .catch((error) => {
             console.error('Error fetching documents:', error);
         });
         console.log('Fetching documents...');
     }
-    const fetchSharedDocuments = () => {
+    const fetchSharedDocuments = (index: number = userIndex) => {
         // Fetch the documents from the server
-        fetch(HTTP_PATH + `api/document/sharedWithMe?userToken=${usersTokens[userIndex]}`, {
+        fetch(HTTP_PATH + `api/document/sharedWithMe?userToken=${usersTokens[index]}`, {
             method: 'GET',
         })
         .then((response) => response.json())
@@ -124,8 +130,8 @@ function App() {
 
     const onUserChange = (index: number) => {
         setUserIndex(index);
-        fetchDocuments();
-        fetchSharedDocuments();
+        fetchDocuments(index);
+        fetchSharedDocuments(index);
         setSelectedFile(null);
     }
 
@@ -151,7 +157,8 @@ function App() {
         })
         .then(() => {
             console.log('succesfully allowed access to document');
-            fetchSharedDocuments();
+            //fetchSharedDocuments();
+            location.reload();
         })
         .catch((error) => {
             console.error('Error allowing access to document:', error);
@@ -165,7 +172,8 @@ function App() {
         })
         .then(() => {
             console.log('succesfully not allowed access to document');
-            fetchSharedDocuments();
+            //fetchSharedDocuments();
+            location.reload();
         })
         .catch((error) => {
             console.error('Error not allowing access to document:', error);
@@ -184,7 +192,8 @@ function App() {
             console.log('Shared document ID: ' + data);
             navigator.clipboard.writeText(data)
             console.log('succesfully shared document');
-            fetchSharedDocuments();
+            //fetchSharedDocuments();
+            location.reload();
         })
         .catch((error) => {
             console.error('Error sharing document:', error);

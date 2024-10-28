@@ -24,7 +24,7 @@ public class LinkService(DatabaseContext databaseContext) : ILinkService
         {
             d.AssociatedUserToken = null;
         }
-        databaseContext.DocumentLinks.Update(d);
+        databaseContext.Update(d);
         databaseContext.SaveChanges();
     }
 }

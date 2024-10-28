@@ -24,7 +24,7 @@ public class DocumentService(DatabaseContext databaseContext) : IDocumentService
 
         // Create and persist a document entity.
         var document = new Document { Title = file.FileName, Content = [], AuthorToken = authorToken };
-        databaseContext.Documents.Add(document);
+        databaseContext.Add(document);
         databaseContext.SaveChanges();
 
         // Instantiate the response body
@@ -58,7 +58,7 @@ public class DocumentService(DatabaseContext databaseContext) : IDocumentService
             d.IsAssociatedUserConfirmed = confirmAssociatedUser;
 
             // Apply the change to d
-            databaseContext.DocumentLinks.Update(d);
+            databaseContext.Update(d);
             databaseContext.SaveChanges();
         }
         return d.Document.ToDocumentResponse();
@@ -103,7 +103,7 @@ public class DocumentService(DatabaseContext databaseContext) : IDocumentService
                     d.IsAssociatedUserConfirmed = true;
 
                     // Apply the change to d
-                    databaseContext.DocumentLinks.Update(d);
+                    databaseContext.Update(d);
                     databaseContext.SaveChanges();
                 }
                 break;
@@ -121,7 +121,7 @@ public class DocumentService(DatabaseContext databaseContext) : IDocumentService
                     d.IsAssociatedUserConfirmed = false;
 
                     // Apply the change to d
-                    databaseContext.DocumentLinks.Update(d);
+                    databaseContext.Update(d);
                     databaseContext.SaveChanges();
                 }
                 break;
@@ -154,7 +154,7 @@ public class DocumentService(DatabaseContext databaseContext) : IDocumentService
         };
 
         // Save the document link to the database
-        databaseContext.DocumentLinks.Add(documentLink);
+        databaseContext.Add(documentLink);
         databaseContext.SaveChanges();
 
         // Return the ID of the new document link

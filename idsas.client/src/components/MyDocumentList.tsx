@@ -65,7 +65,9 @@ const MyDocumentsList: React.FC<MyDocumentsListProps> = ({ title, documents, onD
                             <>
                                 <span className={"share-state-text-2"}>{ShareState.private}</span>
                                 <button className="manage-access-button" onClick={() => {
-                                    onShareDocument(inspectDocumentID)
+                                    onShareDocument(inspectDocumentID);
+                                    alert("Copied to clipboard!");
+
                                 }}> Share</button>
                                 <select className={"share-dropdown"}>
                                     <option value="first">First to Access</option>
