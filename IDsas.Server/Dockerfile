@@ -16,6 +16,8 @@ RUN apt-get -y install nodejs
 
 
 FROM with-node AS build
+RUN mkdir -p /aspnet/https 
+RUN dotnet dev-certs https -v -ep /aspnet/https/aspnetapp.pfx -p somepassword
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 COPY ["IDsas.Server/IDsas.Server.csproj", "IDsas.Server/"]
