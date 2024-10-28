@@ -25,4 +25,14 @@ public class Document
             Content = Content
         };
     }
+
+    public SharedDocumentResponse ToSharedDocumentResponse(bool available)
+    {
+        return new SharedDocumentResponse
+        {
+            DocumentToken = Id.ToString(),
+            Title = Title,
+            available = available
+        };
+    }
 }

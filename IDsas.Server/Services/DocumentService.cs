@@ -7,7 +7,9 @@ public class DocumentService(DatabaseContext databaseContext) : IDocumentService
 {
     public (bool status, DocumentResponse document) UploadDocument(IFormFile file, Guid authorToken)
     {
+        
         byte[] fileData;
+        /*
         try
         {
             using var memoryStream = new MemoryStream();
@@ -17,11 +19,11 @@ public class DocumentService(DatabaseContext databaseContext) : IDocumentService
         catch (IOException exception)
         {
             return (false, null);
-        }
+        }*/
 
 
         // Create and persist a document entity.
-        var document = new Document { Content = fileData, AuthorToken = authorToken };
+        var document = new Document { Title = file.FileName, Content = [], AuthorToken = authorToken };
         databaseContext.Documents.Add(document);
         databaseContext.SaveChanges();
 
@@ -80,6 +82,54 @@ public class DocumentService(DatabaseContext databaseContext) : IDocumentService
         return null;
     }
 
+    public void AccessDocument(Guid documentId, Guid userToken)
+    {
+        var d = databaseContext.DocumentLinks.First(d => d.Id == documentId);
+        switch (d.LinkType)
+        {
+            case LinkType.Public:
+                break;
+            case LinkType.FirstToAccess:
+                if (d.AssociatedUserToken is { } user)
+                {
+                    if (user != userToken || !d.IsAssociatedUserConfirmed)
+                    {
+                        return;
+                    }
+                }
+                else
+                {
+                    d.AssociatedUserToken = userToken;
+                    d.IsAssociatedUserConfirmed = false;
+
+                    // Apply the change to d
+                    databaseContext.DocumentLinks.Update(d);
+                    databaseContext.SaveChanges();
+                }
+                break;
+            case LinkType.ConfirmedFirstToAccess:
+                if (d.AssociatedUserToken is { } user2)
+                {
+                    if (user2 != userToken || !d.IsAssociatedUserConfirmed)
+                    {
+                        return;
+                    }
+                }
+                else
+                {
+                    d.AssociatedUserToken = userToken;
+                    d.IsAssociatedUserConfirmed = true;
+
+                    // Apply the change to d
+                    databaseContext.DocumentLinks.Update(d);
+                    databaseContext.SaveChanges();
+                }
+                break;
+            default:
+                throw new ArgumentOutOfRangeException();
+        }
+    }
+
     public string ShareDocument(Guid documentToken, Guid userToken, LinkType linkType)
     {
         // Create a new document link entity and save it to the database.
@@ -136,5 +186,24 @@ public class DocumentService(DatabaseContext databaseContext) : IDocumentService
         }
 
         return (true, documents);
+    }
+
+    public List<SharedDocumentResponse> GetDocumentsSharedWithForUser(Guid userGuid)
+    {
+        List<DocumentLink> links = databaseContext.DocumentLinks.Where(d => d.AssociatedUserToken == userGuid).ToList();
+        List<SharedDocumentResponse> documentResponses = new List<SharedDocumentResponse>();
+
+        foreach (DocumentLink link in links)
+        {
+            SharedDocumentResponse res = new SharedDocumentResponse
+            {
+                Title = link.Document.Title,
+                DocumentToken = link.Document.Id.ToString(),
+                available = link.LinkType == LinkType.Public || (link.IsAssociatedUserConfirmed && link.AssociatedUserToken == userGuid)
+            };
+            documentResponses.Add(res);
+        }
+
+        return documentResponses;
     }
 }

@@ -10,10 +10,13 @@ public interface IDocumentService
     Document SignDocument(Guid document, Guid signerToken);
 
     DocumentResponse GetDocument(Guid documentId, Guid userToken);
+    void AccessDocument(Guid documentId, Guid userToken);
 
     string ShareDocument(Guid documentToken, Guid userToken, LinkType linkType);
 
     bool OwnsDocument(Guid documentToken, Guid userToken);
 
     (bool status, List<DocumentResponse> userDocuments) DocumentsForUser(Guid userToken);
+
+    List<SharedDocumentResponse> GetDocumentsSharedWithForUser(Guid userGuid);
 }

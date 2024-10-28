@@ -18,19 +18,21 @@ function App() {
     ]
 
     const [myDocuments, setMyDocuments] = useState<MyDocument[]>([
-        { name: 'Document1.pdf', shareState: ShareState.shared },
-        { name: 'Document2.docx', shareState: ShareState.private },
-        { name: 'Presentation.pptx', shareState: ShareState.waitingConfirmation },
+        { name: 'Document1.pdf', token: '123', shareState: ShareState.shared },
+        { name: 'Document2.docx', token: '1234', shareState: ShareState.private },
+        { name: 'Presentation.pptx', token: '1235', shareState: ShareState.waitingConfirmation },
     ]);
     
     const [sharedDocuments, setSharedDocuments] = useState<SharedDocument[]>([
-        { name: 'Document3.pdf', available: true },
+        { name: 'Document3.pdf', linkToken: "123", available: true },
         {
             name: 'Document4.docx',
+            linkToken: "123", 
             available: false
         },
         {
             name: 'Presentation2.pptx',
+            linkToken: "123", 
             available: false
         },
     ]);
@@ -48,14 +50,38 @@ function App() {
     };
     const fetchDocuments = () => {
         // Fetch the documents from the server
-        fetch('api/document/document', {
+        fetch(HTTP_PATH + `api/document/all?userToken=${usersTokens[userIndex]}`, {
             method: 'GET',
         })
         .then((response) => response.json())
         .then((data) => {
             console.log('Documents fetched successfully:', data);
-            setMyDocuments(data.myDocuments);
-            setSharedDocuments(data.sharedDocuments);
+            let documents: MyDocument[] = [];
+            data.forEach((doc: any) => {
+                documents.push({ name: doc.title, token: doc.documentToken, shareState: ShareState.private,  })
+            });
+
+            setMyDocuments(documents);
+        })
+        .catch((error) => {
+            console.error('Error fetching documents:', error);
+        });
+        console.log('Fetching documents...');
+    }
+    const fetchSharedDocuments = () => {
+        // Fetch the documents from the server
+        fetch(HTTP_PATH + `api/document/sharedWithMe?userToken=${usersTokens[userIndex]}`, {
+            method: 'GET',
+        })
+        .then((response) => response.json())
+        .then((data) => {
+            console.log('Documents fetched successfully:', data);
+            let documents: SharedDocument[] = [];
+            data.forEach((doc: any) => {
+                documents.push({ name: doc.title, linkToken: doc.documentToken, available: doc.available, })
+            });
+
+            setSharedDocuments(documents);
         })
         .catch((error) => {
             console.error('Error fetching documents:', error);
@@ -79,6 +105,7 @@ function App() {
             .then((response) => response.json())
             .then((data) => {
                 console.log('File uploaded successfully:', data);
+                fetchDocuments();
             })
             .catch((error) => {
                 console.error('Error uploading file:', error);
@@ -91,33 +118,83 @@ function App() {
     const onUserChange = (index: number) => {
         setUserIndex(index);
         fetchDocuments();
+        fetchSharedDocuments();
         setSelectedFile(null);
     }
 
     const onAccessSharedFile = (token: string) => {
-        console.log('Accessing shared file with token:', token);
+        // Fetch the documents from the server
+        fetch(HTTP_PATH + `api/document/access?documentToken=${token}&userToken=${usersTokens[userIndex]}`, {
+            method: 'POST',
+        })
+        .then(() => {
+            console.log('succesfully accessed document');
+            fetchSharedDocuments();
+        })
+        .catch((error) => {
+            console.error('Error accessing document:', error);
+        });
+        console.log('Accessing document...');
+        fetchSharedDocuments();
     };
 
     const onConfirmDocument = (index: number) => {
-        console.log('Confirming document:', index);
+        fetch(HTTP_PATH + `api/link/allowAccess?linkToken=${sharedDocuments[index].linkToken}&userToken=${usersTokens[userIndex]}`, {
+            method: 'POST',
+        })
+        .then(() => {
+            console.log('succesfully allowed access to document');
+            fetchSharedDocuments();
+        })
+        .catch((error) => {
+            console.error('Error allowing access to document:', error);
+        });
+        console.log('Allowing access to document...');
     }
 
     const onRejectDocument = (index: number) => {
-        console.log('Rejecting document:', index);
+        fetch(HTTP_PATH + `api/link/denyAccess?linkToken=${sharedDocuments[index].linkToken}&userToken=${usersTokens[userIndex]}`, {
+            method: 'POST',
+        })
+        .then(() => {
+            console.log('succesfully not allowed access to document');
+            fetchSharedDocuments();
+        })
+        .catch((error) => {
+            console.error('Error not allowing access to document:', error);
+        });
+        console.log('Not allowing access to document...');
     }
 
     const onShareDocument = (index: number) => {
-        console.log('Sharing document:', index);
+        fetch(HTTP_PATH + `api/document/share?documentToken=${myDocuments[index].token}&userToken=${usersTokens[userIndex]}`, {
+            method: 'POST',
+        })
+        .then((response) => {
+            return response.text(); // Parse as text instead of JSON
+        })
+        .then((data) => {
+            console.log('Shared document ID: ' + data);
+            navigator.clipboard.writeText(data)
+            console.log('succesfully shared document');
+            fetchSharedDocuments();
+        })
+        .catch((error) => {
+            console.error('Error sharing document:', error);
+        });
+        console.log('Sharing document...');
     }
 
     useEffect(() => {
         // Fetch the documents when the app loads
         fetchDocuments();
+        fetchSharedDocuments();
     }, []);
 
     useEffect(() => {
         setUploadFileActive(false);
         fetchDocuments();
+        fetchSharedDocuments();
     }, [userIndex]);
 
     return (

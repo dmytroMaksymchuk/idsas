@@ -8,6 +8,7 @@ export enum ShareState{
 }
 export interface MyDocument {
     name: string;
+    token: string;
     shareState: ShareState;
 }
 

@@ -3,6 +3,7 @@ import {useState} from "react";
 
 export interface SharedDocument {
     name: string;
+    linkToken: string;
     available: boolean;
 }
 
