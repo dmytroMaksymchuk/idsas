@@ -14,19 +14,17 @@ public class LinkService(DatabaseContext databaseContext) : ILinkService
 
     public void SetAccessAllowed(Guid linkToken, bool allowed)
     {
+        DocumentLink d = databaseContext.DocumentLinks.First(d => d.Id == linkToken);
+
         if (allowed)
         {
-            DocumentLink d = databaseContext.DocumentLinks.First(d => d.Id == linkToken);
             d.IsAssociatedUserConfirmed = true;
-            databaseContext.DocumentLinks.Update(d);
-            databaseContext.SaveChanges();
         }
         else
         {
-            DocumentLink d = databaseContext.DocumentLinks.First(d => d.Id == linkToken);
             d.AssociatedUserToken = null;
-            databaseContext.DocumentLinks.Update(d);
-            databaseContext.SaveChanges();
         }
+        databaseContext.DocumentLinks.Update(d);
+        databaseContext.SaveChanges();
     }
 }
