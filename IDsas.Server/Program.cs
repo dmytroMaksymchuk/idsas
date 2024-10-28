@@ -1,3 +1,5 @@
+using IDsas.Server.Services;
+
 namespace IDsas.Server
 {
     public class Program
@@ -6,8 +8,8 @@ namespace IDsas.Server
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            // Add services to the container.
-
+            builder.Services.AddDbContext<DatabaseContext>();
+            builder.Services.AddScoped<IDocumentService, DocumentService>();
             builder.Services.AddControllers();
 
             var app = builder.Build();
@@ -16,14 +18,10 @@ namespace IDsas.Server
             app.UseStaticFiles();
 
             // Configure the HTTP request pipeline.
-
             app.UseAuthorization();
 
-
             app.MapControllers();
-
             app.MapFallbackToFile("/index.html");
-
             app.Run();
         }
     }
