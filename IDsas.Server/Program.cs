@@ -10,6 +10,7 @@ namespace IDsas.Server
 
             builder.Services.AddDbContext<DatabaseContext>();
             builder.Services.AddScoped<IDocumentService, DocumentService>();
+            builder.Services.AddScoped<ILinkService, LinkService>();
             builder.Services.AddControllers();
 
             var app = builder.Build();
