@@ -1,4 +1,4 @@
-﻿using IDsas.Server.Entities;
+﻿using IDsas.Server.DatabaseEntities;
 using Microsoft.EntityFrameworkCore;
 
 namespace IDsas.Server;

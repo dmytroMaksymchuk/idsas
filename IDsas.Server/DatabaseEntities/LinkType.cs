@@ -1,4 +1,4 @@
-﻿namespace IDsas.Server.Entities;
+﻿namespace IDsas.Server.DatabaseEntities;
 
 public enum LinkType
 {

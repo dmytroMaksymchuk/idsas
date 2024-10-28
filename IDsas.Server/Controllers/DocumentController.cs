@@ -1,4 +1,3 @@
-using IDsas.Server.Entities;
 using IDsas.Server.Services;
 using Microsoft.AspNetCore.Mvc;
 
