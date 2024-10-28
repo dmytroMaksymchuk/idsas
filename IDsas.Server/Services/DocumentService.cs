@@ -100,7 +100,7 @@ public class DocumentService(DatabaseContext databaseContext) : IDocumentService
                 else
                 {
                     d.AssociatedUserToken = userToken;
-                    d.IsAssociatedUserConfirmed = false;
+                    d.IsAssociatedUserConfirmed = true;
 
                     // Apply the change to d
                     databaseContext.DocumentLinks.Update(d);
@@ -118,7 +118,7 @@ public class DocumentService(DatabaseContext databaseContext) : IDocumentService
                 else
                 {
                     d.AssociatedUserToken = userToken;
-                    d.IsAssociatedUserConfirmed = true;
+                    d.IsAssociatedUserConfirmed = false;
 
                     // Apply the change to d
                     databaseContext.DocumentLinks.Update(d);
@@ -177,7 +177,16 @@ public class DocumentService(DatabaseContext databaseContext) : IDocumentService
 
             foreach (Document doc in fullDocuments)
             {
-                documents.Add(doc.ToDocumentResponse());
+                DocumentResponse response = doc.ToDocumentResponse();
+                if (databaseContext.DocumentLinks.Where(d => d.LinkType == LinkType.ConfirmedFirstToAccess && d.IsAssociatedUserConfirmed == false).ToList().Count != 0)
+                {
+                    response.shareState = ShareState.WaitingConfirmation;
+                }
+                else
+                {
+                    response.shareState = ShareState.Private;
+                }
+                documents.Add(response);    
             }
         }
         catch (Exception e)

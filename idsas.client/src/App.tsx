@@ -58,8 +58,15 @@ function App() {
             console.log('Documents fetched successfully:', data);
             let documents: MyDocument[] = [];
             data.forEach((doc: any) => {
-                documents.push({ name: doc.title, token: doc.documentToken, shareState: ShareState.private,  })
+                let shareState = ShareState.private;
+                console.log(doc.shareState)
+                if (doc.shareState == 2) {
+                    shareState = ShareState.waitingConfirmation;
+                }
+                documents.push({ name: doc.title, token: doc.documentToken, shareState: shareState  })
             });
+
+            console.log(documents)
 
             setMyDocuments(documents);
         })
@@ -75,7 +82,7 @@ function App() {
         })
         .then((response) => response.json())
         .then((data) => {
-            console.log('Documents fetched successfully:', data);
+            console.log('Shared Documents fetched successfully:', data);
             let documents: SharedDocument[] = [];
             data.forEach((doc: any) => {
                 documents.push({ name: doc.title, linkToken: doc.documentToken, available: doc.available, })
@@ -139,7 +146,7 @@ function App() {
     };
 
     const onConfirmDocument = (index: number) => {
-        fetch(HTTP_PATH + `api/link/allowAccess?linkToken=${sharedDocuments[index].linkToken}&userToken=${usersTokens[userIndex]}`, {
+        fetch(HTTP_PATH + `api/link/allowAccess?linkToken=${myDocuments[index].token}&userToken=${usersTokens[userIndex]}`, {
             method: 'POST',
         })
         .then(() => {
@@ -153,7 +160,7 @@ function App() {
     }
 
     const onRejectDocument = (index: number) => {
-        fetch(HTTP_PATH + `api/link/denyAccess?linkToken=${sharedDocuments[index].linkToken}&userToken=${usersTokens[userIndex]}`, {
+        fetch(HTTP_PATH + `api/link/denyAccess?linkToken=${myDocuments[index].token}&userToken=${usersTokens[userIndex]}`, {
             method: 'POST',
         })
         .then(() => {
@@ -185,6 +192,11 @@ function App() {
         console.log('Sharing document...');
     }
 
+    const fetchAll = () => {
+        fetchDocuments();
+        fetchSharedDocuments();
+    }
+
     useEffect(() => {
         // Fetch the documents when the app loads
         fetchDocuments();
@@ -197,6 +209,8 @@ function App() {
         fetchSharedDocuments();
     }, [userIndex]);
 
+
+
     return (
         <div className="App">
             <Header uploadFileActive={uploadFileActive} setUploadFileActive={setUploadFileActive} userIndex={userIndex} setUserIndex={onUserChange} />
@@ -205,7 +219,7 @@ function App() {
             }
             {!uploadFileActive &&
                 <>
-                <img className={"refresh-button"} src={"./refresh.svg"} alt={"refresh"} onClick={fetchDocuments} />
+                <img className={"refresh-button"} src={"./refresh.svg"} alt={"refresh"} onClick={fetchAll} />
                 <MyDocumentsList title={"My Documents"} documents={myDocuments}
                                  onDownloadFile={onDownloadFile} confirmDocument={onConfirmDocument}
                                  rejectDocument={onRejectDocument} onShareDocument={onShareDocument}/>
