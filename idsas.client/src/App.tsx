@@ -48,19 +48,19 @@ function App() {
     };
     const fetchDocuments = () => {
         // Fetch the documents from the server
-        //fetch('api/document/document', {
-        //    method: 'GET',
-        //})
-        //.then((response) => response.json())
-        //.then((data) => {
-        //    console.log('Documents fetched successfully:', data);
-        //    setMyDocuments(data.myDocuments);
-        //    setSharedDocuments(data.sharedDocuments);
-        //})
-        //.catch((error) => {
-        //    console.error('Error fetching documents:', error);
-        //});
-        //console.log('Fetching documents...');
+        fetch('api/document/document', {
+            method: 'GET',
+        })
+        .then((response) => response.json())
+        .then((data) => {
+            console.log('Documents fetched successfully:', data);
+            setMyDocuments(data.myDocuments);
+            setSharedDocuments(data.sharedDocuments);
+        })
+        .catch((error) => {
+            console.error('Error fetching documents:', error);
+        });
+        console.log('Fetching documents...');
     }
 
 
