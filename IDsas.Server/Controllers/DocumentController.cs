@@ -70,7 +70,7 @@ public class DocumentController(IDocumentService documentService) : ControllerBa
     {
         var userGuid = Guid.Parse(userToken);
         var (status, userDocuments) = documentService.DocumentsForUser(userGuid);
-        //TODO
-        throw new NotImplementedException();
+
+        return Ok(userDocuments);
     }
 }
