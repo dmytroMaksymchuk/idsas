@@ -2,46 +2,47 @@ using IDsas.Server.Entities;
 
 namespace IDsas.Server.Services;
 
-public class DocumentService : IDocumentService
+public class DocumentService(DatabaseContext databaseContext) : IDocumentService
 {
-    private readonly DatabaseContext _databaseContext;
-
-    public DocumentService(DatabaseContext databaseContext)
-    {
-        _databaseContext = databaseContext;
-    }
-
-    public Document UploadDocument(IFormFile file, string userToken)
+    public (bool status, Document document) UploadDocument(IFormFile file, Guid authorToken)
     {
         byte[] fileData;
-        using (var memoryStream = new MemoryStream())
+        try
         {
-            file.CopyTo(memoryStream);
-            fileData = memoryStream.ToArray();
+            using (var memoryStream = new MemoryStream())
+            {
+                file.CopyTo(memoryStream);
+                fileData = memoryStream.ToArray();
+            }
+        }
+        catch (IOException exception)
+        {
+            return (false, null);
         }
 
-        // Check file data for existing signatures
-        // this method returns the uploaded documents as unsigned by default
 
-        var document = new Document();
-        document.Content = fileData;
-        document.Author = userToken;
-        return document;
+        //Create and persist a document entity.
+        var document = new Document { Content = fileData, AuthorToken = authorToken };
+        databaseContext.Documents.Add(document);
+        databaseContext.SaveChanges();
+
+        return (true, document);
     }
 
-    public Document SignDocument(Document document, string signerName)
+    public Document SignDocument(Guid documentGuid, Guid signerGuid)
     {
         // Perform operations on the file data to actually sign the document.
         // This method returns the same file after populating the signing-related fields.
         // Save the document to the database _databaseContext.
 
-        return document;
+        //TODO
+        return null;
     }
 
 
     public Document GetDocument(Guid documentId, Guid userToken)
     {
-        var d = _databaseContext.DocumentLinks.First(d => d.Id.ToString() == documentId);
+        var d = databaseContext.DocumentLinks.First(d => d.Id == documentId);
         switch (d.LinkType)
         {
             case LinkType.Public:
@@ -50,7 +51,7 @@ public class DocumentService : IDocumentService
                 {
                     if (d.AssociatedUserToken is { } user)
                     {
-                        if (user.ToString() != userToken)
+                        if (user != userToken)
                         {
                             //TODO return error code when
                             return null;
@@ -58,7 +59,7 @@ public class DocumentService : IDocumentService
                     }
                     else
                     {
-                        d.AssociatedUser = new User { AuthorizationToken = Guid.Parse(userToken) };
+                        d.AssociatedUserToken = userToken;
                         //TODO continue implementation
                     }
                     return d.Document;
@@ -75,19 +76,19 @@ public class DocumentService : IDocumentService
         return null;
     }
 
-    public string ShareDocument(string documentToken, string userToken)
+    public string ShareDocument(Guid documentToken, Guid userToken)
     {
         //TODO
         return null;
     }
 
-    public bool OwnsDocument(string userToken)
+    public bool OwnsDocument(Guid userToken)
     {
         //TODO   
         return false;
     }
 
-    public (bool status, List<Document> userDocuments) DocumentsForUser()
+    public (bool status, List<Document> userDocuments) DocumentsForUser(Guid userToken)
     {
         //TODO
         throw new NotImplementedException();

@@ -4,15 +4,15 @@ namespace IDsas.Server.Services;
 
 public interface IDocumentService
 {
-    Document UploadDocument(IFormFile file);
+    (bool status, Document document) UploadDocument(IFormFile file, Guid authorToken);
 
-    Document SignDocument(Document document, string signerName);
+    Document SignDocument(Guid document, Guid signerToken);
 
     Document GetDocument(Guid documentId, Guid userToken);
 
-    string ShareDocument(string documentToken, string userToken);
+    string ShareDocument(Guid documentToken, Guid userToken);
 
-    bool OwnsDocument(string userToken);
+    bool OwnsDocument(Guid userToken);
 
-    (bool status, List<Document> userDocuments) DocumentsForUser();
+    (bool status, List<Document> userDocuments) DocumentsForUser(Guid userToken);
 }

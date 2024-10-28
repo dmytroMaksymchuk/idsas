@@ -12,22 +12,25 @@ public class DocumentController(IDocumentService documentService) : ControllerBa
     /// This endpoint accepts form/multipart content in the request body.
     /// </summary>
     [HttpPost("upload")]
-    public IActionResult UploadDocument(IFormFile file)
+    public IActionResult UploadDocument(IFormFile file, string authorToken)
     {
+        Guid authorGuid = Guid.Parse(authorToken);
         if (file == null || file.Length == 0)
         {
             return BadRequest("No file uploaded.");
         }
 
-        var document = documentService.UploadDocument(file);
+        var (success, document) = documentService.UploadDocument(file, authorGuid);
 
         return Ok(document);
     }
 
     [HttpPut("sign")]
-    public IActionResult SignDocument(Guid signerName)
+    public IActionResult SignDocument(string documentToken, string signerToken)
     {
-        var signed = documentService.SignDocument(_currentDocument, signerName);
+        var documentGuid = Guid.Parse(documentToken);
+        var signerGuid = Guid.Parse(signerToken);
+        var signed = documentService.SignDocument(documentGuid, signerGuid);
         return Ok(signed);
     }
 
@@ -52,17 +55,21 @@ public class DocumentController(IDocumentService documentService) : ControllerBa
     [HttpGet("share")]
     public IActionResult ShareDocument(string documentToken, string userToken)
     {
-        if (!documentService.OwnsDocument(userToken))
+        var documentGuid = Guid.Parse(documentToken);
+        var userGuid = Guid.Parse(userToken);
+
+        if (!documentService.OwnsDocument(userGuid))
         {
             Forbid();
         }
-        return Ok(documentService.ShareDocument(documentToken, userToken));
+        return Ok(documentService.ShareDocument(documentGuid, userGuid));
     }
 
     [HttpGet("all")]
     public IActionResult AllDocuments(string userToken)
     {
-        var (status, userDocuments) = documentService.DocumentsForUser();
+        var userGuid = Guid.Parse(userToken);
+        var (status, userDocuments) = documentService.DocumentsForUser(userGuid);
         //TODO
         throw new NotImplementedException();
     }
