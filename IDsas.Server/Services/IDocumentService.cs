@@ -15,5 +15,9 @@ public interface IDocumentService
 
     bool OwnsDocument(Guid documentToken, Guid userToken);
 
+    bool OwnsLink(Guid linkToken, Guid userToken);
+
+    void SetAccessAllowed(Guid linkToken, bool allowed);
+
     (bool status, List<DocumentResponse> userDocuments) DocumentsForUser(Guid userToken);
 }

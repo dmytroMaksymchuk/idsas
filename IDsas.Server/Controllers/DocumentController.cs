@@ -73,4 +73,36 @@ public class DocumentController(IDocumentService documentService) : ControllerBa
 
         return Ok(userDocuments);
     }
+
+    [HttpPost("allowAccess")]
+    public IActionResult AllowAccess(string linkToken, string userToken)
+    {
+        var linkGuid = Guid.Parse(linkToken);
+        var userGuid = Guid.Parse(userToken);
+
+        if (!documentService.OwnsLink(linkGuid, userGuid))
+        {
+            return Forbid();
+        }
+
+        documentService.SetAccessAllowed(linkGuid, true);
+
+        return Ok();
+    }
+
+    [HttpPost("denyAccess")]
+    public IActionResult DenyAccess(string linkToken, string userToken)
+    {
+        var linkGuid = Guid.Parse(linkToken);
+        var userGuid = Guid.Parse(userToken);
+
+        if (!documentService.OwnsLink(linkGuid, userGuid))
+        {
+            return Forbid();
+        }
+
+        documentService.SetAccessAllowed(linkGuid, false);
+
+        return Ok();
+    }
 }
