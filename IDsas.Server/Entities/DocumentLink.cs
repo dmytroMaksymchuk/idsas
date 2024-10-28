@@ -16,11 +16,13 @@ public class DocumentLink
     ///  [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     [Key]
-    public Guid Id { get; set; }
+    public Guid? Id { get; set; }
 
     public Document Document { get; set; }
 
-    public bool IsConfirmed { get; set; }
-    public User AssociatedUser { get; set; }
+    public bool IsAssociatedUserConfirmed { get; set; }
+
+    public Guid? AssociatedUserToken { get; set; }
+
     public LinkType LinkType { get; set; }
 }
