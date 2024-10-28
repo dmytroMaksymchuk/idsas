@@ -1,3 +1,4 @@
+using IDsas.Server.DatabaseEntities;
 using IDsas.Server.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -57,11 +58,11 @@ public class DocumentController(IDocumentService documentService) : ControllerBa
         var documentGuid = Guid.Parse(documentToken);
         var userGuid = Guid.Parse(userToken);
 
-        if (!documentService.OwnsDocument(userGuid))
+        if (!documentService.OwnsDocument(documentGuid, userGuid))
         {
             Forbid();
         }
-        return Ok(documentService.ShareDocument(documentGuid, userGuid));
+        return Ok(documentService.ShareDocument(documentGuid, userGuid, LinkType.ConfirmedFirstToAccess));
     }
 
     [HttpGet("all")]

@@ -11,9 +11,9 @@ public interface IDocumentService
 
     DocumentResponse GetDocument(Guid documentId, Guid userToken);
 
-    string ShareDocument(Guid documentToken, Guid userToken);
+    string ShareDocument(Guid documentToken, Guid userToken, LinkType linkType);
 
-    bool OwnsDocument(Guid userToken);
+    bool OwnsDocument(Guid documentToken, Guid userToken);
 
     (bool status, List<DocumentResponse> userDocuments) DocumentsForUser(Guid userToken);
 }
