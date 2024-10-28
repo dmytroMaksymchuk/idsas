@@ -1,10 +1,11 @@
 using IDsas.Server.Entities;
+using IDsas.Server.RestEntities;
 
 namespace IDsas.Server.Services;
 
 public interface IDocumentService
 {
-    (bool status, Document document) UploadDocument(IFormFile file, Guid authorToken);
+    (bool status, DocumentEntry document) UploadDocument(IFormFile file, Guid authorToken);
 
     Document SignDocument(Guid document, Guid signerToken);
 

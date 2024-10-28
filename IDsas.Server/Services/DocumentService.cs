@@ -1,19 +1,18 @@
 using IDsas.Server.Entities;
+using IDsas.Server.RestEntities;
 
 namespace IDsas.Server.Services;
 
 public class DocumentService(DatabaseContext databaseContext) : IDocumentService
 {
-    public (bool status, Document document) UploadDocument(IFormFile file, Guid authorToken)
+    public (bool status, DocumentEntry document) UploadDocument(IFormFile file, Guid authorToken)
     {
         byte[] fileData;
         try
         {
-            using (var memoryStream = new MemoryStream())
-            {
-                file.CopyTo(memoryStream);
-                fileData = memoryStream.ToArray();
-            }
+            using var memoryStream = new MemoryStream();
+            file.CopyTo(memoryStream);
+            fileData = memoryStream.ToArray();
         }
         catch (IOException exception)
         {
@@ -21,12 +20,14 @@ public class DocumentService(DatabaseContext databaseContext) : IDocumentService
         }
 
 
-        //Create and persist a document entity.
+        // Create and persist a document entity.
         var document = new Document { Content = fileData, AuthorToken = authorToken };
         databaseContext.Documents.Add(document);
         databaseContext.SaveChanges();
 
-        return (true, document);
+        // Instantiate the response body
+        var documentEntry = new DocumentEntry { Content = document.Content, Title = document.Title, DocumentToken = document.Id.ToString() };
+        return (true, documentEntry);
     }
 
     public Document SignDocument(Guid documentGuid, Guid signerGuid)
@@ -78,7 +79,6 @@ public class DocumentService(DatabaseContext databaseContext) : IDocumentService
 
     public string ShareDocument(Guid documentToken, Guid userToken)
     {
-        //TODO
         return null;
     }
 
