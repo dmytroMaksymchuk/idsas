@@ -40,6 +40,27 @@ public class DocumentService(DatabaseContext databaseContext) : IDocumentService
         return null;
     }
 
+    private DocumentResponse CheckUserAccess(bool confirmAssociatedUser, Guid userToken, DocumentLink d)
+    {
+        if (d.AssociatedUserToken is { } user)
+        {
+            if (user != userToken || !d.IsAssociatedUserConfirmed)
+            {
+                //TODO return error code when
+                return null;
+            }
+        }
+        else
+        {
+            d.AssociatedUserToken = userToken;
+            d.IsAssociatedUserConfirmed = true;
+
+            // Apply the change to d
+            databaseContext.DocumentLinks.Update(d);
+            databaseContext.SaveChanges();
+        }
+        return d.Document.ToDocumentResposend();
+    }
 
     public DocumentResponse GetDocument(Guid documentId, Guid userToken)
     {
@@ -49,27 +70,9 @@ public class DocumentService(DatabaseContext databaseContext) : IDocumentService
             case LinkType.Public:
                 return d.Document.ToDocumentResposend();
             case LinkType.FirstToAccess:
-                {
-                    if (d.AssociatedUserToken is { } user)
-                    {
-                        if (user != userToken)
-                        {
-                            //TODO return error code when
-                            return null;
-                        }
-                    }
-                    else
-                    {
-                        d.AssociatedUserToken = userToken;
-                        //TODO continue implementation
-                    }
-                    return d.Document.ToDocumentResposend();
-                }
+                return CheckUserAccess(true, userToken, d);
             case LinkType.ConfirmedFirstToAccess:
-                {
-                    //TODO implement user confirmation
-                    break;
-                }
+                return CheckUserAccess(false, userToken, d);
             default:
                 throw new ArgumentOutOfRangeException();
         }
