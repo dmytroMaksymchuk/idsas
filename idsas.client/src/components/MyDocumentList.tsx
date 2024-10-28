@@ -17,9 +17,10 @@ interface MyDocumentsListProps {
     onDownloadFile: (index: number) => void;
     confirmDocument: (index: number) => void;
     rejectDocument: (index: number) => void;
+    onShareDocument: (index: number) => void;
 }
 
-const MyDocumentsList: React.FC<MyDocumentsListProps> = ({ title, documents, onDownloadFile, confirmDocument, rejectDocument }) => {
+const MyDocumentsList: React.FC<MyDocumentsListProps> = ({ title, documents, onDownloadFile, confirmDocument, rejectDocument, onShareDocument }) => {
     const [inspectDocumentID, setInspectDocumentID] = useState<number>(-1);
     const [manageConfirmation, setManageConfirmation] = useState<boolean>(false);
 
@@ -62,7 +63,9 @@ const MyDocumentsList: React.FC<MyDocumentsListProps> = ({ title, documents, onD
                         {documents[inspectDocumentID].shareState == ShareState.private && (
                             <>
                                 <span className={"share-state-text-2"}>{ShareState.private}</span>
-                                <button className="manage-access-button">Share</button>
+                                <button className="manage-access-button" onClick={() => {
+                                    onShareDocument(inspectDocumentID)
+                                }}> Share</button>
                                 <select className={"share-dropdown"}>
                                     <option value="first">First to Access</option>
                                     <option value="public">Public</option>

@@ -11,9 +11,9 @@ function App() {
     const [userIndex, setUserIndex] = useState(0);
 
     //const usersTokens = [
-    //    '0x1234567890',
-    //    '0x0987654321',
-    //    '0xabcdef1234',
+    //    "579c59ec-f4a1-4acd-8c50-448217bbfdde",
+    //    "12e420da-543e-44cb-bdb7-298d33c4ad48",
+    //    "05698aa2-fdbf-4a37-a6e1-bf842165f136",
     //]
 
     const [myDocuments, setMyDocuments] = useState<MyDocument[]>([
@@ -45,7 +45,7 @@ function App() {
     const onDownloadFile = (index: number) => {
         console.log('Downloading file:', index);
     };
-    const fetchDocuments = async () => {
+    const fetchDocuments = () => {
         // Fetch the documents from the server
         fetch('api/document/document', {
             method: 'GET',
@@ -87,33 +87,27 @@ function App() {
         }
     };
 
-    // useEffect(() => {
-    //     const testAPI = async () => {
-    //         try {
-    //             // Construct the URL with query parameters
-    //             const response = await fetch(`http://localhost:32768/api/document/document?documentId=${encodeURIComponent("24324")}&userToken=${encodeURIComponent("234234")}`, {
-    //                 method: 'GET',
-    //             });
-    //             console.log('Response:', response);
-    //
-    //             // Check if the response is OK (status code 200-299)
-    //             if (!response.ok) {
-    //                 throw new Error(`HTTP error! Status: ${response.status}`);
-    //             }
-    //
-    //             const data = await response.json();
-    //             console.log('Test API response:', data);
-    //         } catch (error) {
-    //             console.error('Error fetching document:', error);
-    //         }
-    //     };
-    //
-    //     testAPI();
-    // }, []);
+    const onUserChange = (index: number) => {
+        setUserIndex(index);
+        fetchDocuments();
+        setSelectedFile(null);
+    }
 
     const onAccessSharedFile = (token: string) => {
         console.log('Accessing shared file with token:', token);
     };
+
+    const onConfirmDocument = (index: number) => {
+        console.log('Confirming document:', index);
+    }
+
+    const onRejectDocument = (index: number) => {
+        console.log('Rejecting document:', index);
+    }
+
+    const onShareDocument = (index: number) => {
+        console.log('Sharing document:', index);
+    }
 
     useEffect(() => {
         // Fetch the documents when the app loads
@@ -121,20 +115,22 @@ function App() {
     }, []);
 
     useEffect(() => {
-        // Refresh the documents when the user index changes
-        // Set all flags to false
+        setUploadFileActive(false);
+        fetchDocuments();
     }, [userIndex]);
 
     return (
         <div className="App">
-            <Header uploadFileActive={uploadFileActive} setUploadFileActive={setUploadFileActive} userIndex={userIndex} setUserIndex={setUserIndex}/>
+            <Header uploadFileActive={uploadFileActive} setUploadFileActive={setUploadFileActive} userIndex={userIndex} setUserIndex={onUserChange} />
             {uploadFileActive &&
                 <UploadFilePopUp handleFileChange={handleFileChange} onSign={handleSignDocument} setUploadFileActive={setUploadFileActive}/>
             }
             {!uploadFileActive &&
                 <>
                 <img className={"refresh-button"} src={"./refresh.svg"} alt={"refresh"} onClick={fetchDocuments} />
-                <MyDocumentsList title={"My Documents"} documents={myDocuments} onDownloadFile={onDownloadFile} confirmDocument={() => { }} rejectDocument={() => { }} />
+                <MyDocumentsList title={"My Documents"} documents={myDocuments}
+                                 onDownloadFile={onDownloadFile} confirmDocument={onConfirmDocument}
+                                 rejectDocument={onRejectDocument} onShareDocument={onShareDocument}/>
                     <SharedDocumentList title={"Documents Shared With Me"} documents={sharedDocuments}
                                         onDownloadFile={() => console.log("Download")} onFileAccess={onAccessSharedFile}/>
                 </>
