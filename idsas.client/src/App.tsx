@@ -73,7 +73,7 @@ function App() {
             //formData.append('authorToken');
 
             // Send the file to the server
-            fetch('api/document/upload', {
+            fetch(HTTP_PATH + 'api/document/upload', {
                 method: 'POST',
                 body: formData,
             })

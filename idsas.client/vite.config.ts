@@ -48,11 +48,11 @@ export default defineConfig({
         proxy: {
             '^/api/document/upload' : {
                 target,
-                secure: true
+                secure: false
             },
             '^/api/document/document' : {
                 target,
-                secure: true
+                secure: false
             }
 
         },
