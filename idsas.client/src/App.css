@@ -19,3 +19,22 @@
     align-items: center;
 }
 
+.refresh-button {
+    position: absolute;
+    top: 16vh;
+    left: 10vw;
+    width: 6vw;
+    height: 5vh;
+    cursor: pointer;
+    font-size: 1vh;
+    z-index: 100;
+}
+
+.refresh-button:hover {
+    background-color: lightblue;
+    color: white;
+}
+
+.refresh-button:active {
+    transform: scale(0.9);
+}

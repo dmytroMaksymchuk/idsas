@@ -34,3 +34,38 @@
 .upload-file-button:active {
     transform: scale(0.9);
 }
+
+.user-selected-buttons {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    flex-direction: row;
+    gap: 1vw;
+    justify-content: space-between;
+
+}
+
+.user-button {
+    width: 5vw;
+    height: 5vh;
+    color: black;
+    background-color: grey;
+    border: none;
+    border-radius: 5px;
+    font-size: 1vw;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.user-button.selected {
+    background-color: #61dafb;
+}
+
+.user-button:hover {
+    background-color: lightblue;
+}
+
+
+

@@ -61,3 +61,20 @@
 .download-button:active {
     transform: scale(0.9);
 }
+
+.access-button {
+    width: 5vw;
+    height: 3vh;
+    background-color: #007bff;
+    margin-bottom: 3vh;
+    margin-left: 1vw;
+    color: white;
+}
+
+.access-button:hover {
+    background-color: #0056b3;
+}
+
+.access-button:active {
+    transform: scale(0.9);
+}
