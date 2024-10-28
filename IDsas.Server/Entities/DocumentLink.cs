@@ -21,6 +21,8 @@ public class DocumentLink
     public Document Document { get; set; }
 
     public bool IsConfirmed { get; set; }
-    public User AssociatedUser { get; set; }
+
+    public Guid AssociatedUserToken { get; set; }
+
     public LinkType LinkType { get; set; }
 }

@@ -12,6 +12,6 @@ public class Document
     public Guid Id { get; set; }
     public string Title { get; set; }
     public byte[] Content { get; set; }
-    public User Author { get; set; }
+    public Guid AuthorToken { get; set; }
     public IList<DocumentLink> DocumentLinks { get; set; }
 }
