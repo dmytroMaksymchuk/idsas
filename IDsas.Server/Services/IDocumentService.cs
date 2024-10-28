@@ -13,4 +13,6 @@ public interface IDocumentService
     string ShareDocument(string documentToken, string userToken);
 
     bool OwnsDocument(string userToken);
+
+    (bool status, List<Document> userDocuments) DocumentsForUser();
 }

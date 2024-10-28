@@ -59,7 +59,9 @@ public class DocumentController : ControllerBase
         return Ok();
     }
 
-
+    /// <summary>
+    /// Generate sharing link for the document
+    /// </summary>
     [HttpGet("share")]
     public IActionResult ShareDocument(string documentToken, string userToken)
     {
@@ -68,5 +70,11 @@ public class DocumentController : ControllerBase
             Forbid();
         }
         return Ok(_documentService.ShareDocument(documentToken, userToken));
+    }
+
+    [HttpGet("all")]
+    public IActionResult AllDocuments(string userToken)
+    {
+        _currentDocument.DocumentsForUser();
     }
 }
