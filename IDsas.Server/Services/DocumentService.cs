@@ -90,7 +90,17 @@ public class DocumentService(DatabaseContext databaseContext) : IDocumentService
 
     public (bool status, List<Document> userDocuments) DocumentsForUser(Guid userToken)
     {
-        //TODO
-        throw new NotImplementedException();
+        List<Document> documents;
+
+        try
+        {
+            documents = databaseContext.Documents.Where(d => d.AuthorToken == userToken).ToList();
+        }
+        catch (Exception e)
+        {
+            return (false, null);
+        }
+
+        return (true, documents);
     }
 }
