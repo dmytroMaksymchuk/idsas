@@ -53,7 +53,7 @@ public class DocumentService(DatabaseContext databaseContext) : IDocumentService
         else
         {
             d.AssociatedUserToken = userToken;
-            d.IsAssociatedUserConfirmed = true;
+            d.IsAssociatedUserConfirmed = confirmAssociatedUser;
 
             // Apply the change to d
             databaseContext.DocumentLinks.Update(d);
