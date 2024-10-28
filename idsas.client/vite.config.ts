@@ -46,10 +46,6 @@ export default defineConfig({
     },
     server: {
         proxy: {
-            '^/weatherforecast': {
-                target,
-                secure: true
-            },
             '^/api/document/upload' : {
                 target,
                 secure: true
