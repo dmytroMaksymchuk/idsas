@@ -207,7 +207,7 @@ public class DocumentService(DatabaseContext databaseContext) : IDocumentService
             SharedDocumentResponse res = new SharedDocumentResponse
             {
                 Title = link.Document.Title,
-                DocumentToken = link.Document.Id.ToString(),
+                DocumentToken = link.Id.ToString(),
                 available = link.LinkType == LinkType.Public || (link.IsAssociatedUserConfirmed && link.AssociatedUserToken == userGuid)
             };
             documentResponses.Add(res);
