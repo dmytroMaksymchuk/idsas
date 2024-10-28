@@ -41,13 +41,13 @@ public class DocumentService(DatabaseContext databaseContext) : IDocumentService
     }
 
 
-    public DocumentEntry GetDocument(Guid documentId, Guid userToken)
+    public DocumentResponse GetDocument(Guid documentId, Guid userToken)
     {
         var d = databaseContext.DocumentLinks.First(d => d.Id == documentId);
         switch (d.LinkType)
         {
             case LinkType.Public:
-                return d.Document.ToDocumentEntry();
+                return d.Document.ToDocumentResposend();
             case LinkType.FirstToAccess:
                 {
                     if (d.AssociatedUserToken is { } user)
@@ -63,7 +63,7 @@ public class DocumentService(DatabaseContext databaseContext) : IDocumentService
                         d.AssociatedUserToken = userToken;
                         //TODO continue implementation
                     }
-                    return d.Document.ToDocumentEntry();
+                    return d.Document.ToDocumentResposend();
                 }
             case LinkType.ConfirmedFirstToAccess:
                 {
@@ -88,16 +88,17 @@ public class DocumentService(DatabaseContext databaseContext) : IDocumentService
         return false;
     }
 
-    public (bool status, List<DocumentEntry> userDocuments) DocumentsForUser(Guid userToken)
+    public (bool status, List<DocumentResponse> userDocuments) DocumentsForUser(Guid userToken)
     {
-        List<DocumentEntry> documents = new List<DocumentEntry>();
+        List<DocumentResponse> documents = [];
 
         try
         {
-            var full_documents = databaseContext.Documents.Where(d => d.AuthorToken == userToken).ToList();
+            var fullDocuments = databaseContext.Documents.Where(d => d.AuthorToken == userToken).ToList();
 
-            foreach (Document doc in full_documents) {
-                documents.Add(doc.ToDocumentEntry());
+            foreach (Document doc in fullDocuments)
+            {
+                documents.Add(doc.ToDocumentResposend());
             }
         }
         catch (Exception e)

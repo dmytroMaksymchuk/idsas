@@ -16,9 +16,9 @@ public class Document
     public Guid? AuthorToken { get; set; }
     public IList<DocumentLink> DocumentLinks { get; set; }
 
-    public DocumentEntry ToDocumentEntry()
+    public DocumentResponse ToDocumentResposend()
     {
-        return new DocumentEntry
+        return new DocumentResponse
         {
             DocumentToken = Id.ToString(),
             Title = Title,
