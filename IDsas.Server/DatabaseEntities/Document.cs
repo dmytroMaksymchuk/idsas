@@ -16,7 +16,7 @@ public class Document
     public Guid? AuthorToken { get; set; }
     public IList<DocumentLink> DocumentLinks { get; set; }
 
-    public DocumentResponse ToDocumentResposend()
+    public DocumentResponse ToDocumentResponse()
     {
         return new DocumentResponse
         {

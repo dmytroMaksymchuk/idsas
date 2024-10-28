@@ -40,6 +40,27 @@ public class DocumentService(DatabaseContext databaseContext) : IDocumentService
         return null;
     }
 
+    private DocumentResponse CheckUserAccess(bool confirmAssociatedUser, Guid userToken, DocumentLink d)
+    {
+        if (d.AssociatedUserToken is { } user)
+        {
+            if (user != userToken || !d.IsAssociatedUserConfirmed)
+            {
+                //TODO return error code when
+                return null;
+            }
+        }
+        else
+        {
+            d.AssociatedUserToken = userToken;
+            d.IsAssociatedUserConfirmed = confirmAssociatedUser;
+
+            // Apply the change to d
+            databaseContext.DocumentLinks.Update(d);
+            databaseContext.SaveChanges();
+        }
+        return d.Document.ToDocumentResponse();
+    }
 
     public DocumentResponse GetDocument(Guid documentId, Guid userToken)
     {
@@ -47,29 +68,11 @@ public class DocumentService(DatabaseContext databaseContext) : IDocumentService
         switch (d.LinkType)
         {
             case LinkType.Public:
-                return d.Document.ToDocumentResposend();
+                return d.Document.ToDocumentResponse();
             case LinkType.FirstToAccess:
-                {
-                    if (d.AssociatedUserToken is { } user)
-                    {
-                        if (user != userToken)
-                        {
-                            //TODO return error code when
-                            return null;
-                        }
-                    }
-                    else
-                    {
-                        d.AssociatedUserToken = userToken;
-                        //TODO continue implementation
-                    }
-                    return d.Document.ToDocumentResposend();
-                }
+                return CheckUserAccess(true, userToken, d);
             case LinkType.ConfirmedFirstToAccess:
-                {
-                    //TODO implement user confirmation
-                    break;
-                }
+                return CheckUserAccess(false, userToken, d);
             default:
                 throw new ArgumentOutOfRangeException();
         }
@@ -77,15 +80,41 @@ public class DocumentService(DatabaseContext databaseContext) : IDocumentService
         return null;
     }
 
-    public string ShareDocument(Guid documentToken, Guid userToken)
+    public string ShareDocument(Guid documentToken, Guid userToken, LinkType linkType)
     {
-        return null;
+        // Create a new document link entity and save it to the database.
+        Document document = databaseContext.Documents.First(d => d.Id == documentToken);
+
+        if (document.AuthorToken != userToken)
+        {
+            return null;
+        }
+
+        if (document == null)
+        {
+            return null;
+        }
+
+        // Create a new document link entity
+        DocumentLink documentLink = new DocumentLink
+        {
+            Document = document,
+            LinkType = linkType,
+            IsAssociatedUserConfirmed = false
+        };
+
+        // Save the document link to the database
+        databaseContext.DocumentLinks.Add(documentLink);
+        databaseContext.SaveChanges();
+
+        // Return the ID of the new document link
+        return documentLink.Id.ToString();
     }
 
-    public bool OwnsDocument(Guid userToken)
+    public bool OwnsDocument(Guid documentToken, Guid userToken)
     {
-        //TODO   
-        return false;
+        Document document = databaseContext.Documents.First(d => d.Id == documentToken);
+        return document.AuthorToken == userToken;
     }
 
     public (bool status, List<DocumentResponse> userDocuments) DocumentsForUser(Guid userToken)
@@ -98,7 +127,7 @@ public class DocumentService(DatabaseContext databaseContext) : IDocumentService
 
             foreach (Document doc in fullDocuments)
             {
-                documents.Add(doc.ToDocumentResposend());
+                documents.Add(doc.ToDocumentResponse());
             }
         }
         catch (Exception e)
