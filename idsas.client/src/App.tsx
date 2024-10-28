@@ -5,17 +5,17 @@ import UploadFilePopUp from "./components/UploadFilePopUp.tsx";
 import MyDocumentsList, {ShareState, MyDocument} from "./components/MyDocumentList.tsx";
 import SharedDocumentList, {SharedDocument} from "./components/SharedDocumentList.tsx";
 
-const HTTP_PATH = `http://localhost:32768/`;
+const HTTP_PATH = `http://localhost:5000/`;
 function App() {
     const [selectedFile, setSelectedFile] = useState(null);
     const [uploadFileActive, setUploadFileActive] = useState(false);
     const [userIndex, setUserIndex] = useState(0);
 
-    //const usersTokens = [
-    //    "579c59ec-f4a1-4acd-8c50-448217bbfdde",
-    //    "12e420da-543e-44cb-bdb7-298d33c4ad48",
-    //    "05698aa2-fdbf-4a37-a6e1-bf842165f136",
-    //]
+    const usersTokens = [
+        "579c59ec-f4a1-4acd-8c50-448217bbfdde",
+        "12e420da-543e-44cb-bdb7-298d33c4ad48",
+        "05698aa2-fdbf-4a37-a6e1-bf842165f136",
+    ]
 
     const [myDocuments, setMyDocuments] = useState<MyDocument[]>([
         { name: 'Document1.pdf', shareState: ShareState.shared },
@@ -70,12 +70,11 @@ function App() {
             // Create a FormData object to send the file to the server
             const formData = new FormData();
             formData.append('file', selectedFile);
-            //formData.append('authorToken');
 
             // Send the file to the server
-            fetch(HTTP_PATH + 'api/document/upload', {
+            fetch(HTTP_PATH + `api/document/upload?authorToken=${usersTokens[userIndex]}`, {
                 method: 'POST',
-                body: formData,
+                body: formData
             })
             .then((response) => response.json())
             .then((data) => {
