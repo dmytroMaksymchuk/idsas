@@ -41,13 +41,13 @@ public class DocumentService(DatabaseContext databaseContext) : IDocumentService
     }
 
 
-    public Document GetDocument(Guid documentId, Guid userToken)
+    public DocumentEntry GetDocument(Guid documentId, Guid userToken)
     {
         var d = databaseContext.DocumentLinks.First(d => d.Id == documentId);
         switch (d.LinkType)
         {
             case LinkType.Public:
-                return d.Document;
+                return d.Document.ToDocumentEntry();
             case LinkType.FirstToAccess:
                 {
                     if (d.AssociatedUserToken is { } user)
@@ -63,7 +63,7 @@ public class DocumentService(DatabaseContext databaseContext) : IDocumentService
                         d.AssociatedUserToken = userToken;
                         //TODO continue implementation
                     }
-                    return d.Document;
+                    return d.Document.ToDocumentEntry();
                 }
             case LinkType.ConfirmedFirstToAccess:
                 {
@@ -88,13 +88,17 @@ public class DocumentService(DatabaseContext databaseContext) : IDocumentService
         return false;
     }
 
-    public (bool status, List<Document> userDocuments) DocumentsForUser(Guid userToken)
+    public (bool status, List<DocumentEntry> userDocuments) DocumentsForUser(Guid userToken)
     {
-        List<Document> documents;
+        List<DocumentEntry> documents = new List<DocumentEntry>();
 
         try
         {
-            documents = databaseContext.Documents.Where(d => d.AuthorToken == userToken).ToList();
+            var full_documents = databaseContext.Documents.Where(d => d.AuthorToken == userToken).ToList();
+
+            foreach (Document doc in full_documents) {
+                documents.Add(doc.ToDocumentEntry());
+            }
         }
         catch (Exception e)
         {

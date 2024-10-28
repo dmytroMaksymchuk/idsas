@@ -9,11 +9,11 @@ public interface IDocumentService
 
     Document SignDocument(Guid document, Guid signerToken);
 
-    Document GetDocument(Guid documentId, Guid userToken);
+    DocumentEntry GetDocument(Guid documentId, Guid userToken);
 
     string ShareDocument(Guid documentToken, Guid userToken);
 
     bool OwnsDocument(Guid userToken);
 
-    (bool status, List<Document> userDocuments) DocumentsForUser(Guid userToken);
+    (bool status, List<DocumentEntry> userDocuments) DocumentsForUser(Guid userToken);
 }
