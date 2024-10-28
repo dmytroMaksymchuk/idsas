@@ -1,5 +1,4 @@
 using IDsas.Server.Entities;
-using Microsoft.AspNetCore.Mvc;
 
 namespace IDsas.Server.Services;
 
@@ -12,7 +11,7 @@ public class DocumentService : IDocumentService
         _databaseContext = databaseContext;
     }
 
-    public Document VerifyDocument(IFormFile file)
+    public Document UploadDocument(IFormFile file, string userToken)
     {
         byte[] fileData;
         using (var memoryStream = new MemoryStream())
@@ -25,6 +24,8 @@ public class DocumentService : IDocumentService
         // this method returns the uploaded documents as unsigned by default
 
         var document = new Document();
+        document.Content = fileData;
+        document.Author = userToken;
         return document;
     }
 
@@ -38,7 +39,7 @@ public class DocumentService : IDocumentService
     }
 
 
-    public Document GetDocument(string documentId, string userToken)
+    public Document GetDocument(Guid documentId, Guid userToken)
     {
         var d = _databaseContext.DocumentLinks.First(d => d.Id.ToString() == documentId);
         switch (d.LinkType)
@@ -47,9 +48,9 @@ public class DocumentService : IDocumentService
                 return d.Document;
             case LinkType.FirstToAccess:
                 {
-                    if (d.AssociatedUser is { } user)
+                    if (d.AssociatedUserToken is { } user)
                     {
-                        if (user.AuthorizationToken.ToString() != userToken)
+                        if (user.ToString() != userToken)
                         {
                             //TODO return error code when
                             return null;
@@ -84,5 +85,11 @@ public class DocumentService : IDocumentService
     {
         //TODO   
         return false;
+    }
+
+    public (bool status, List<Document> userDocuments) DocumentsForUser()
+    {
+        //TODO
+        throw new NotImplementedException();
     }
 }

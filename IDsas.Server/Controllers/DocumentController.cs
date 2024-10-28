@@ -6,17 +6,8 @@ namespace IDsas.Server.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class DocumentController : ControllerBase
+public class DocumentController(IDocumentService documentService) : ControllerBase
 {
-    private readonly IDocumentService _documentService;
-    private Document _currentDocument;
-
-    public DocumentController(IDocumentService documentService)
-    {
-        _documentService = documentService;
-        _currentDocument = null;
-    }
-
     /// <summary>
     /// This endpoint accepts form/multipart content in the request body.
     /// </summary>
@@ -28,22 +19,15 @@ public class DocumentController : ControllerBase
             return BadRequest("No file uploaded.");
         }
 
-        Document document = _documentService.VerifyDocument(file);
-        _currentDocument = document;
+        var document = documentService.UploadDocument(file);
 
         return Ok(document);
     }
 
     [HttpPut("sign")]
-    public IActionResult SignDocument(string signerName)
+    public IActionResult SignDocument(Guid signerName)
     {
-        if (_currentDocument == null)
-        {
-            return BadRequest("Upload a file before signing.");
-        }
-
-        Document signed = _documentService.SignDocument(_currentDocument, signerName);
-
+        var signed = documentService.SignDocument(_currentDocument, signerName);
         return Ok(signed);
     }
 
@@ -51,11 +35,14 @@ public class DocumentController : ControllerBase
     /// Retrieve a document using its token
     /// </summary>
     [HttpGet("access")]
-    public IActionResult AccessDocument(string documentId, string userToken)
+    public IActionResult AccessDocument(string documentToken, string userToken)
     {
+        var documentGuid = Guid.Parse(documentToken);
+        var userGuid = Guid.Parse(userToken);
+
         //First check the token against the links table
         //Check the link type if a match is found
-        _documentService.GetDocument(documentId, userToken);
+        documentService.GetDocument(documentGuid, userGuid);
         return Ok();
     }
 
@@ -65,16 +52,18 @@ public class DocumentController : ControllerBase
     [HttpGet("share")]
     public IActionResult ShareDocument(string documentToken, string userToken)
     {
-        if (!_documentService.OwnsDocument(userToken))
+        if (!documentService.OwnsDocument(userToken))
         {
             Forbid();
         }
-        return Ok(_documentService.ShareDocument(documentToken, userToken));
+        return Ok(documentService.ShareDocument(documentToken, userToken));
     }
 
     [HttpGet("all")]
     public IActionResult AllDocuments(string userToken)
     {
-      (bool status, List<Document> userDocuments) = _documentService.DocumentsForUser();
+        var (status, userDocuments) = documentService.DocumentsForUser();
+        //TODO
+        throw new NotImplementedException();
     }
 }
